@@ -70,35 +70,35 @@ public class ArenaData {
 	}
 	
 	public int getInGameCount(){
-		
+		return 0;
 	}
 	
 	public int getInGame(int index){
-		
+		return 0;
 	}
 	
 	public int getMinutes(){
-		
+		return 0;
 	}
 	
 	public int getSeconds(){
-		
+		return 0;
 	}
 	
 	public int getPlayerScore(Player player){
-		
+		return 0;
 	}
 	
 	public Location getHub(String arenaName){
-		
+		return null;
 	}
 	
 	public Location getLobby(String arenaName){
-		
+		return null;
 	}
 	
 	public Location getSpawn(String arenaName){
-		
+		return null;
 	}
 	
 	//------------------------------------------------------------------------------------------------------
