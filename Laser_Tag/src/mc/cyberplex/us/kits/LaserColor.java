@@ -3,7 +3,6 @@ package mc.cyberplex.us.kits;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,7 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import mc.cyberplex.us.Main;
 import net.md_5.bungee.api.ChatColor;
 
-public class LaserColor implements Listener {
+public class LaserColor {
 
 	Main main = Main.getMain();
 
@@ -20,11 +19,10 @@ public class LaserColor implements Listener {
 	int count = 1000;
 
 	//create the shop inventory to choose the color for the laser
-	@SuppressWarnings("deprecation")
 	public void createLaserShop(Player player) {
 
 		//create an inventory object for the laser color
-		Inventory laserColor = Bukkit.createInventory(null, 27, ChatColor.DARK_RED + "Laser Color");
+		Inventory laserColor = Bukkit.createInventory(null, 27, ChatColor.DARK_RED + "Select Laser Color");
 
 		//create the back arrow item for the inventory
 		ItemStack backArrow = new ItemStack(Material.ARROW, 1);
@@ -126,6 +124,6 @@ public class LaserColor implements Listener {
 		//open the inventory for the player
 		player.openInventory(laserColor);
 
-	}	
+	}
 
 }
