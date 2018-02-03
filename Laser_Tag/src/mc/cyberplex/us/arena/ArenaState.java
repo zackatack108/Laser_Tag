@@ -1,4 +1,6 @@
-package lt;
+package mc.cyberplex.us.arena;
+
+import mc.cyberplex.us.Main;
 
 public class ArenaState {
 	

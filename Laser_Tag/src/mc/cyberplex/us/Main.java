@@ -1,8 +1,10 @@
-package lt;
+package mc.cyberplex.us;
 
 import java.io.File;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import mc.cyberplex.us.kits.Shop;
 
 public class Main extends JavaPlugin{
 
@@ -15,23 +17,30 @@ public class Main extends JavaPlugin{
 		
 		main = this;
 		
-		main.getConfig().options().copyDefaults(true);
-		createConfig();
-		main.saveConfig();
+		//main.getConfig().options().copyDefaults(true);
+		//createConfig();
+		//main.saveConfig();
 		
 		//register commands
+		this.getCommand("lt").setExecutor(new Commands());
 		
 		//register listeners
+		getServer().getPluginManager().registerEvents(new Shop(), this);
+		//getServer().getPluginManager().registerEvents(new LaserColor(), this);
+		//getServer().getPluginManager().registerEvents(new FireworkColor(), this);
+		//getServer().getPluginManager().registerEvents(new GunType(), this);
+		//getServer().getPluginManager().registerEvents(new GunRange(), this);
+		//getServer().getPluginManager().registerEvents(new ReloadTime(), this);
 		
 	}
 	
 	public void onDisable(){
 		
-		main.saveConfig();
+		//main.saveConfig();
 		
 	}
 	
-	private void createConfig(){
+	/*private void createConfig(){
 		
 		try {
 
@@ -65,6 +74,6 @@ public class Main extends JavaPlugin{
 			except.printStackTrace();
 		}
 		
-	}
+	}*/
 	
 }

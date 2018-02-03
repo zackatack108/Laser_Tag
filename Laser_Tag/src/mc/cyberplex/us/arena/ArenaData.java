@@ -1,4 +1,4 @@
-package lt;
+package mc.cyberplex.us.arena;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -6,6 +6,8 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import mc.cyberplex.us.Main;
 
 public class ArenaData {
 
