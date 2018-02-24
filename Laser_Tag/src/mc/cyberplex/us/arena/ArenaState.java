@@ -6,7 +6,7 @@ public class ArenaState {
 	
 	Main main = Main.getMain();
 	
-	public void waiting(){
+	public void waiting(String arenaName){
 		
 	}
 	
