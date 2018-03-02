@@ -196,9 +196,6 @@ public class Commands implements CommandExecutor{
 						player.sendMessage(ChatColor.RED + "Sorry, you aren't in an arena");
 					} else if(inArena == true) {
 						playerState.leaveGame(arenaName, player);
-						
-						int arenaNum = data.getArenaNum(arenaName);
-						Bukkit.broadcastMessage(data.getArena(arenaNum).getInGame(0));
 					}
 
 				} else {
