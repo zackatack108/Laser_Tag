@@ -10,11 +10,11 @@ public class ArenaState {
 		
 	}
 	
-	public void start(){
+	public void start(String arenaName){
 		
 	}
 	
-	public void stop(){
+	public void stop(String arenaName){
 		
 	}
 	
