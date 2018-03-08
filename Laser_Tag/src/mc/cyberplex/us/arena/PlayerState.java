@@ -1,7 +1,5 @@
 package mc.cyberplex.us.arena;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -11,7 +9,6 @@ import net.md_5.bungee.api.ChatColor;
 public class PlayerState {
 
 	Main main = Main.getMain();
-	ArenaState arenaState = new ArenaState();
 	PlayerList getPlayerList = new PlayerList();
 	ArenaData data = new ArenaData();;
 
@@ -21,120 +18,79 @@ public class PlayerState {
 
 		state = main.getConfig().getString("Arenas." + arenaName + ".state");
 
-		if(main.getConfig().getString("Arenas." + arenaName + ".lobby.world") == null) {
-
+		if(main.getConfig().getString("Arenas." + arenaName + ".lobby.world") == null) { //check to see if a lobby exist for the arena
 			player.sendMessage(ChatColor.RED + "Sorry, a lobby doesn't exist for the arena");
-
-		} else if(state.equals("running")) {
-
+		} else if(state.equals("running")) { //check to see if the arena is currently running
 			player.sendMessage(ChatColor.RED + "Sorry, the arena is currently running");
-
 		} else {
 
-			ArenaData.saveInventory(player);
-
-			player.teleport(data.getLobby(arenaName));
-
+			//--------------------------------------------------------------------------------------------------
+			//puts the player in arena, saves their inventory and will send them the scoreboard
+			//--------------------------------------------------------------------------------------------------
 			int arenaNum = data.getArenaNum(arenaName);
-
-			data.getArena(arenaNum).setInGame(player);
-
+			ArenaData.saveInventory(player);
+			player.teleport(data.getLobby(arenaName));
+			data.getArena(arenaNum).addPlayer(player);
+			ArenaState arenaState = new ArenaState();
 			arenaState.waiting(arenaName);
-
 			getPlayerList.getPlayer(arenaName, Message.LOBBY);
+			//--------------------------------------------------------------------------------------------------
 
 		}
 
 	}
 
-	public void leaveGame(String arenaName, Player player){
+	public void leaveGame(String arenaName, Player player){	
 
-		//get the state of the arena and who has the flags
-		String gameState = main.getConfig().getString("Arenas." + arenaName + ".state");
+		state = main.getConfig().getString("Arenas." + arenaName + ".state");		
+		int arenaNum = data.getArenaNum(arenaName);	
 
-		//get the minimum number of players for arena
-		int minPlayers = main.getConfig().getInt("Arenas." + arenaName + ".min");
-
-		int arenaNum = data.getArenaNum(arenaName);
-		int arenaTotal = data.getArena(arenaNum).getInGameCount();									
-
-		//return inventory to player
-		ArenaData.returnInventory(player);
-
-		String inGame;
-		String[] playerList = new String[arenaTotal];
-		int count = 0;
-
-		for(int index = 0; index < arenaTotal; index++){			
-
-			inGame = data.getArena(arenaNum).getInGame(index);
-
-			if(!(inGame.equals(player.getUniqueId().toString()))){
-				playerList[count] = inGame;
-				count++;
-			}
-		}
-
-		UUID playerID;
-		Player newPlayer;
-		data.getArena(arenaNum).setInGameCount(0);
-		--arenaTotal;
-
-		if(playerList[0] == null) {
-
-			data.getArena(arenaNum).setInGame(null);
-			main.getConfig().set("Arenas." + arenaName + ".state", "waiting for players");
-			main.saveConfig();
-
-		} else {
-
-			for(int index = 0; index < arenaTotal; index++){
-
-				playerID = UUID.fromString(playerList[index]);
-				newPlayer = Bukkit.getPlayer(playerID);
-				data.getArena(arenaNum).setInGame(newPlayer);
-
-			}
-
-		}
-
-		//gives player an empty scoreboard
-		player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-
-		arenaTotal = data.getArena(arenaNum).getInGameCount();
-
-		//check the state of the arena
-		if(gameState.equalsIgnoreCase("waiting for players")){
-
-			if(data.getArena(arenaNum).getInGameCount() > 0){
-				//calls the getPlayerList class to load the lobby scoreboard
-				getPlayerList.getPlayer(arenaName, Message.LOBBY);
-			}
-
-
-		} else if(gameState.equalsIgnoreCase("running")){
+		if(state.equalsIgnoreCase("running")){
 
 			//checks to see if the total players is less then the minimum for arena
-			if(data.getArena(arenaNum).getInGameCount() < minPlayers){
+			if(data.getArena(arenaNum).getInGameCount()-1 < data.getMinPlayers(arenaName)){
+
+				main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
+				ArenaState arenaState = new ArenaState();
 
 				//stops the arena
 				arenaState.stop(arenaName);
 
-			} else {
+				return;
+
+			}
+
+		}
+
+		//--------------------------------------------------------------------------------------------------
+		//this bit actually will remove the player from the arena and take them back to hub with their stuff
+		//--------------------------------------------------------------------------------------------------
+		if(player != null) {
+			ArenaData.returnInventory(player);
+			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());		
+			player.teleport(data.getHub());
+			player.sendMessage(ChatColor.YELLOW + "Leaving laser tag arena");
+			player.sendMessage(ChatColor.YELLOW + "Sending you to the laser tag hub.");	
+		}
+		data.getArena(arenaNum).removePlayer(player);
+		//--------------------------------------------------------------------------------------------------
+
+		//--------------------------------------------------------------------------------------------------
+		//this bit will update the scoreboards to those still in the game
+		//--------------------------------------------------------------------------------------------------
+		if(player !=null) {
+			if(state.equalsIgnoreCase("waiting for players")){
+
+				getPlayerList.getPlayer(arenaName, Message.LOBBY);
+
+			} else if(state.equalsIgnoreCase("running")){
 
 				//Calls the getPlayerList class to load the game scoreboard
 				getPlayerList.getPlayer(arenaName, Message.GAME);
 
-			}									
-
+			}
 		}
-
-		//Send player a message saying they are leaving the arena and are being teleported to the hub
-		player.sendMessage(ChatColor.YELLOW + "Leaving laser tag arena");
-		player.sendMessage(ChatColor.YELLOW + "Sending you to the laser tag hub.");									
-
-		//teleport player to the hub
-		player.teleport(data.getHub());
+		//--------------------------------------------------------------------------------------------------
 
 	}
 

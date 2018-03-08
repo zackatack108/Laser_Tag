@@ -2,7 +2,6 @@ package mc.cyberplex.us;
 
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -138,7 +137,7 @@ public class Commands implements CommandExecutor{
 
 					if(inGame == true) {						
 						player.sendMessage(ChatColor.RED + "Sorry, you are currently in an arena");
-						player.sendMessage(ChatColor.RED + "Please do " + ChatColor.DARK_RED + "/lt leave " + ChatColor.RED + "before joining the arena" );
+						player.sendMessage(ChatColor.RED + "Please do " + ChatColor.DARK_RED + "/lt leave " + ChatColor.RED + "before joining an arena" );
 					} else {
 
 						if(args.length == 2) {
@@ -214,8 +213,23 @@ public class Commands implements CommandExecutor{
 
 					if(args.length == 2) {
 
+						//check if the arena exist in the config
 						if(main.getConfig().contains("Arenas." + args[1].toLowerCase())) {
-							state.start(args[1].toLowerCase());
+
+							//check if the arena is currently running
+							if(main.getConfig().getString("Arenas." + args[1].toLowerCase() + ".state").equalsIgnoreCase("running")) {
+
+								//display error message to user
+								player.sendMessage(ChatColor.RED + "Sorry, the arena is currently running");
+
+							} else {
+
+								//start the arena
+								state.start(args[1].toLowerCase());
+								player.sendMessage(ChatColor.GREEN + "Arena " + args[1].toLowerCase() + " has been started");
+
+							}
+
 						} else {
 							player.sendMessage(missingName);
 						}
@@ -248,8 +262,19 @@ public class Commands implements CommandExecutor{
 						//check if arena name exist in config
 						if(main.getConfig().contains("Arenas." + args[1].toLowerCase())) {
 
-							//stop the arena
-							state.stop(args[1].toLowerCase());
+							if(main.getConfig().getString("Arenas." + args[1].toLowerCase() + ".state").equalsIgnoreCase("waiting for players")) {
+
+								//display error message to user
+								player.sendMessage(ChatColor.RED + "Sorry, the arena is currently not running");
+								
+							} else {
+								
+								main.getConfig().set("Arenas." + args[1].toLowerCase() + ".state", "stopping");
+
+								//stop the arena
+								state.stop(args[1].toLowerCase());
+								player.sendMessage(ChatColor.GREEN + "Arena " + args[1].toLowerCase() + " has been stopped");
+							}
 
 						} else {
 
@@ -302,6 +327,9 @@ public class Commands implements CommandExecutor{
 							main.getConfig().set("Arenas." + arenaName + ".max", 4);
 							main.getConfig().set("Arenas." + arenaName + ".state", "waiting for players");
 							main.saveConfig();
+							
+							ArenaData.updateArenaList();
+							player.sendMessage(ChatColor.GREEN + "Laser tag arena " + arenaName + " created");
 
 						}
 					} else {
@@ -336,6 +364,8 @@ public class Commands implements CommandExecutor{
 							//remove arena from config
 							main.getConfig().set("Arenas." + arenaName, null);
 							main.saveConfig();
+							
+							ArenaData.updateArenaList();
 
 							//send message to player saying the arena was removed
 							player.sendMessage(ChatColor.YELLOW + "Removing laser tag arena " + arenaName);
@@ -469,6 +499,8 @@ public class Commands implements CommandExecutor{
 						main.reloadConfig();
 						main.saveConfig();
 
+						ArenaData.updateArenaList();
+						
 						//display message to player saying config was reloaded
 						player.sendMessage(ChatColor.GREEN + "Laser tag config reloaded");
 
@@ -570,7 +602,31 @@ public class Commands implements CommandExecutor{
 
 				//check if player has permission to open shop
 				if(player.hasPermission("lt.shop")) {
-					shop.createShop(player);
+					
+					boolean inArena = false;
+					int arenaNum = -1;
+					
+					for(String arena : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
+						arenaNum = data.getArenaNum(arena);
+						for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
+							if(data.getArena(arenaNum).getInGame(count).equals(playerID)) {
+								inArena = true;
+							}
+						}
+					}
+					
+					if(inArena == false) {
+						
+						shop.createShop(player);
+						
+					} else {
+						
+						player.sendMessage(ChatColor.RED + "Sorry, you can't use this command while in a game");
+						
+					}
+					
+					
+						
 				} else {
 
 					//display error message to user

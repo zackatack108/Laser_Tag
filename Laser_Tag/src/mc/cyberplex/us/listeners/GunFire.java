@@ -20,12 +20,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import mc.cyberplex.us.Main;
+import mc.cyberplex.us.arena.ArenaData;
+import mc.cyberplex.us.arena.ArenaState;
+import mc.cyberplex.us.arena.Message;
+import mc.cyberplex.us.arena.PlayerList;
 import mc.cyberplex.us.kits.GetKitItems;
 
 public class GunFire implements Listener{
 	
 	Main main = Main.getMain();
 	GetKitItems kit = new GetKitItems();
+	PlayerList playerList = new PlayerList();
+	ArenaData data = new ArenaData();
+	ArenaState state = new ArenaState();
 
 	Location otherPlayerLoc = null;
 	static HashMap<String, Long> coolDowns = new HashMap<String, Long>();
@@ -36,10 +43,26 @@ public class GunFire implements Listener{
 		Player player = event.getPlayer();
 
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_AIR) {
+			
+			String playerID = player.getUniqueId().toString();
+			
+			boolean inArena = false;
+			String arenaName = null;
+			int arenaNum = -1;
+
+			for(String arena : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
+				arenaNum = data.getArenaNum(arena);
+				for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
+					if(data.getArena(arenaNum).getInGame(count).equals(playerID)) {
+						inArena = true;
+						arenaName = arena;
+					}
+				}
+			}
 
 			ItemStack gunType = new ItemStack(kit.getGunType(player));
 
-			if(player.getInventory().getItemInMainHand().equals(gunType)) {
+			if(player.getInventory().getItemInMainHand().equals(gunType) && inArena == true) {
 
 				Location start = player.getEyeLocation();
 				Vector increase = start.getDirection();
@@ -56,6 +79,9 @@ public class GunFire implements Listener{
 				if(coolDowns.containsKey(player.getName())) {
 
 					long seconds = coolDowns.get(player.getName()).longValue() / 1000L + coolDownTime - System.currentTimeMillis() / 1000L;
+					
+					player.setLevel((int) seconds);
+					
 					if (seconds > 0L)
 					{
 						player.sendMessage(ChatColor.RED + "You can fire again in " + seconds + " seconds!");
@@ -65,6 +91,7 @@ public class GunFire implements Listener{
 				}
 
 				coolDowns.put(player.getName(), Long.valueOf(System.currentTimeMillis()));
+				reloadMsg(player, coolDownTime);
 
 				for(int range = 0; range <= kit.getGunRange(player); range++) {
 
@@ -82,10 +109,12 @@ public class GunFire implements Listener{
 							(Math.round(point.getY()) == Math.round(this.otherPlayerLoc.getY() + 1.0D)) && 
 							(Math.round(point.getZ()) == Math.round(this.otherPlayerLoc.getZ())))
 					{
-						otherPlayer.setHealth(10.0D);
+						
 						final Firework fw = (Firework)point.getWorld().spawnEntity(point, EntityType.FIREWORK);
 						kit.getFireworkColor(fw, player, point);
-
+						otherPlayer.setHealth(0.0D);
+						playerList.deathMessage(arenaName, otherPlayer, player);
+						
 						new BukkitRunnable()
 						{
 							public void run()
@@ -93,6 +122,25 @@ public class GunFire implements Listener{
 								fw.detonate();
 							}
 						}.runTaskLater(this.main, 1L);
+						
+						for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+							
+							if(data.getArena(arenaNum).getInGame(index).equals(playerID)) {
+								
+								int oldScore = data.getArena(arenaNum).getPlayerScore(index);
+								data.getArena(arenaNum).setPlayerScore(index, ++oldScore);
+								playerList.getPlayer(arenaName, Message.GAME);
+								
+								if(data.getArena(arenaNum).getPlayerScore(index) >= data.getScoreToWin()) {
+									
+									main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
+									state.stop(arenaName);		
+								}
+								
+							}
+							
+						}										
+						
 					}
 
 				}
@@ -101,6 +149,32 @@ public class GunFire implements Listener{
 
 		}
 
+	}
+	
+	public void reloadMsg(Player player, int seconds) {
+		
+		if(coolDowns.containsKey(player.getName())) {
+			
+			new BukkitRunnable() {
+				
+				int count = seconds;
+				
+				@Override
+				public void run() {
+					
+					if(count > 0) {						
+						player.setLevel(count);						
+					} else if(count == 0) {
+						player.setLevel(0);
+						cancel();
+					}					
+					--count;					
+				}
+				
+			}.runTaskTimer(main, 0, 20);
+			
+		}
+		
 	}
 
 	public static Player getNearestEntityInSight(Player player, int range)
@@ -118,7 +192,9 @@ public class GunFire implements Listener{
 						(Math.abs(entities.get(k).getLocation().getZ() - sight.get(i).getZ()) < 1.3D)) {
 					return (Player)entities.get(k);
 				}
+				
 			}
+			
 		}
 		return null;
 	}

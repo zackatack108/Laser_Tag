@@ -4,8 +4,14 @@ import java.io.File;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import mc.cyberplex.us.arena.ArenaData;
+import mc.cyberplex.us.arena.ArenaState;
 import mc.cyberplex.us.kits.KitListeners;
 import mc.cyberplex.us.listeners.GunFire;
+import mc.cyberplex.us.listeners.InventoryMove;
+import mc.cyberplex.us.listeners.PlayerDeath;
+import mc.cyberplex.us.listeners.PlayerJoin;
+import mc.cyberplex.us.listeners.PlayerLeaveGame;
 
 public class Main extends JavaPlugin{
 
@@ -22,18 +28,33 @@ public class Main extends JavaPlugin{
 		createConfig();
 		main.saveConfig();
 		
+		ArenaData.rand.setSeed(System.currentTimeMillis());
+		ArenaData.updateArenaList();
+		
 		//register commands
 		this.getCommand("lt").setExecutor(new Commands());
 		
 		//register listeners
 		getServer().getPluginManager().registerEvents(new KitListeners(), this);
 		getServer().getPluginManager().registerEvents(new GunFire(), this);
+		getServer().getPluginManager().registerEvents(new PlayerDeath(), this);
+		getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
+		getServer().getPluginManager().registerEvents(new InventoryMove(), this);
+		getServer().getPluginManager().registerEvents(new PlayerLeaveGame(), this);
 		
 	}
 	
 	public void onDisable(){
 		
 		main.saveConfig();
+		
+		ArenaState state = new ArenaState();
+		
+		for(String arenaName: main.getConfig().getConfigurationSection("Arenas").getKeys(false)){
+			
+			state.stop(arenaName);
+			
+		}
 		
 	}
 	

@@ -26,7 +26,6 @@ public class Scoreboards {
 
 	Team time = board.registerNewTeam("Time");
 	Team playerCount = board.registerNewTeam("Player Count");
-	Team playerTeam = board.registerNewTeam("Player Team");
 
 	Objective lobbyObjective = board.registerNewObjective("Lobby", "dummy");
 	Objective gameObjective = board.registerNewObjective("Game", "dummy");
@@ -70,36 +69,34 @@ public class Scoreboards {
 		time.addEntry(ChatColor.GREEN.toString());
 		time.setPrefix(ChatColor.GREEN + "Time: ");
 		time.setSuffix(ChatColor.WHITE + data.getArena(arenaNum).getTimeMsg());
-		
+
 		Score arena = gameObjective.getScore(ChatColor.YELLOW + "Arena: " + ChatColor.WHITE + arenaName.substring(0,1).toUpperCase() + arenaName.substring(1));
 		Score blank1 = gameObjective.getScore("  ");
 		Score blank2 = gameObjective.getScore("   ");
 		Score count = gameObjective.getScore(ChatColor.GREEN.toString());
-		
-		int scoreCount = 0;
+
+		int scoreCount = 3;
 
 		for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
-			
+
 			UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(index));
 			Player playerName = Bukkit.getPlayer(playerID);
-			
-			playerTeam.addEntry(" " + index);
-			playerTeam.setPrefix(data.getArena(arenaNum).getInGame(index) + ": ");
-			playerTeam.setSuffix(ChatColor.WHITE + "" + data.getArena(arenaNum).getPlayerScore(playerName, arenaName));
-			
+
+			int playerScore = data.getArena(arenaNum).getPlayerScore(index);
+
+			gameObjective.getScore(ChatColor.BLUE + playerName.getName() + ": " + ChatColor.WHITE + playerScore).setScore(scoreCount);
+
 			scoreCount++;
-			
-			Score playerPos = gameObjective.getScore(ChatColor.RED.toString());
-			playerPos.setScore(scoreCount);
-			
+
 		}
-		
+
 		arena.setScore(scoreCount+2);
 		blank1.setScore(scoreCount+1);
 
 		blank2.setScore(2);
 		count.setScore(1);
 
+		player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 		player.setScoreboard(board);
 
 	}

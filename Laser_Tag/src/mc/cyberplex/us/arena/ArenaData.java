@@ -3,6 +3,7 @@ package mc.cyberplex.us.arena;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,42 +24,57 @@ public class ArenaData {
 
 	//private data types 
 	//get arenas from config and save them to arena list
-	private static Set<String> arenas = main.getConfig().getConfigurationSection("Arenas").getKeys(false);
-	private static String[] arenaNames = new String[arenas.size()];
-	private static ArenaData[] arenaList = new ArenaData[arenas.size()];
+	private static Set<String> arenas = null;
+	private static String[] arenaNames = null;
+	private static ArenaData[] arenaList = null;
+	public static Random rand = new Random();
+
+	public int Timer = 0;
 
 	//non static data types
 	//player game data types
 	private String inGame[] = new String[MAX],
 			timeMsg = " ";
-	private int playerScore[] = new int[MAX], 
+	private int playerScores[] = new int[MAX], 
 			scoreToWin = 25, 
 			gameCount = 0,
-			time = 0;
+			seconds = 0,
+			minutes = 0,
+			randomNum;
 
-	/*static void getArenas() {
+	static public void updateArenaList() {
 
-		if(main.getConfig().getConfigurationSection("Arenas") != null) {
+		if(main.getConfig().getConfigurationSection("Arenas").getKeys(false) != null) {
 
-			arenas = main.getConfig().getConfigurationSection("Arenas").getKeys(false);			
-			arenaNames = new String[arenas.size()];
-			arenaList = new ArenaData[arenas.size()];
+			Set<String> tempArenas = main.getConfig().getConfigurationSection("Arenas").getKeys(false);
+
+			if(arenas != null) {
+				if(tempArenas.size() > arenas.size()) {
+
+					arenas = tempArenas;
+					arenaNames = new String[arenas.size()];
+					arenaList = new ArenaData[arenas.size()];
+
+				} 
+			} else {
+
+				arenas = tempArenas;
+				arenaNames = new String[arenas.size()];
+				arenaList = new ArenaData[arenas.size()];
+
+			}
 
 		}
 
-	}*/
-	
-	/*public ArenaData() {
-		getArenas();
-	}*/
+	}
 
 	//--------------------
 	//setters for class
 	//--------------------
-	public void setInGame(Player player){
+	public void addPlayer(Player player){
 
 		inGame[gameCount] = new String();
-
+		
 		if(player == null) {
 
 			inGame[gameCount] = null;
@@ -73,40 +89,81 @@ public class ArenaData {
 		}
 
 	}
+	
+	public void removePlayer(Player player) {
+		
+		int max = getInGameCount();
+		
+		if(max-1 <= 0) {
+			max = 0;
+		}
+		
+		String [] tempPlayers = new String[max];
+		int [] tempScores = new int[max];
+		int count = 0;
+		
+		for(int index = 0; index < max; index++ ) {
+			
+			UUID playerID = UUID.fromString(inGame[index]);
+			Player inGamePlayer = Bukkit.getPlayer(playerID);
+			
+			if(inGamePlayer != player) {
+				tempPlayers[count] = inGame[index];
+				tempScores[count] = playerScores[index];
+				count++;
+			}
+			
+		}
+		
+		if(count != 0) {
+			
+			//decrement max by one
+			--max;
+			gameCount = 0;
+			
+			//move the temp data to the original data 
+			for(int index = 0; index < max; index++) {
+				inGame[index] = tempPlayers[index];
+				playerScores[index] = tempScores[index];
+				gameCount++;
+			}
+			
+		} else {
+			
+			inGame = new String[MAX];
+			playerScores = new int[MAX];
+			gameCount = 0;
+			return;
+			
+		}
+		
+	}
 
 	public void setInGameCount(int count) {
 
-		if(count > 0) {
+		if(count >= 0) {
 			gameCount = count;
 		}
 
 	}
 
-	public void setPlayerScore(Player player, String arenaName){
+	public void setPlayerScore(int index, int score){
 
-		if(player != null) {
-
-			for(int index = 0; index < getMaxPlayers(arenaName); index++) {
-
-				if(inGame[index] == player.getUniqueId().toString()) {
-
-					int oldScore = getPlayerScore(player, arenaName);
-
-					playerScore[index] = oldScore++;
-
-				}
-
-			}
-
+		if(score >= 0) {
+			playerScores[index] = score;	
 		}
 
 	}
 
-	public void setTime(int time_){
-		if(time_ >= 0) {
+	public void setSeconds(int seconds_){
+		if(seconds_ >= 0) {
+			seconds = seconds_;
+		}
+	}
 
-			time = time_;
-
+	public void setMinutes(int minutes_) {
+		if(minutes_ >= 0) {
+			minutes = minutes_;
 		}
 	}
 
@@ -130,7 +187,7 @@ public class ArenaData {
 			main.getConfig().set("Hub.yaw", yaw);
 			main.getConfig().set("Hub.pitch", pitch);
 			main.saveConfig();
-			
+
 		}
 
 	}
@@ -155,7 +212,7 @@ public class ArenaData {
 			main.getConfig().set("Arenas." + arenaName + ".lobby.yaw", yaw);
 			main.getConfig().set("Arenas." + arenaName + ".lobby.pitch", pitch);
 			main.saveConfig();
-			
+
 		}
 
 	}
@@ -213,7 +270,7 @@ public class ArenaData {
 	}
 
 	public int getArenaNum(String arenaName) {
-		
+
 		int arenaNum = -1;
 		int count = 0;
 
@@ -239,23 +296,16 @@ public class ArenaData {
 		return inGame[index];
 	}
 
-	public int getTime(){
-		return time;
+	public int getSeconds(){
+		return seconds;
 	}
 
-	public int getPlayerScore(Player player, String arenaName){
+	public int getMinutes() {
+		return minutes;
+	}
 
-		for(int index = 0; index < getMaxPlayers(arenaName); index++) {
-
-			if(inGame[index] == player.getUniqueId().toString()) {
-
-				return playerScore[index];
-
-			}
-
-		}
-
-		return 0;
+	public int getPlayerScore(int index){
+		return playerScores[index];
 	}
 
 	public int getScoreToWin() {
@@ -292,10 +342,9 @@ public class ArenaData {
 
 	public Location getSpawn(String arenaName){
 
-		Random rand = new Random(System.currentTimeMillis());
 		final int min = 0;
-		int max = getNumSpawns(arenaName)-1;
-		int randomNum = rand.nextInt(max) + min;
+		int max = getNumSpawns(arenaName);
+		randomNum = rand.nextInt(max) + min;
 
 		String world = main.getConfig().getString("Arenas." + arenaName + ".spawn." + randomNum + ".world");
 		double x = main.getConfig().getDouble("Arenas." + arenaName + ".spawn." + randomNum + ".x"),
@@ -310,16 +359,16 @@ public class ArenaData {
 	}
 
 	public int getMinPlayers(String arenaName) {
-		
+
 		int min = main.getConfig().getInt("Arenas." + arenaName + ".min");
-		
+
 		return min;		
 	}
 
 	public int getMaxPlayers(String arenaName) {
-		
+
 		int max = main.getConfig().getInt("Arenas." + arenaName + ".max");
-		
+
 		return max;
 	}
 
@@ -328,11 +377,11 @@ public class ArenaData {
 		int spawnCount;
 
 		Set<String> spawnList = null;
-		
+
 		if(main.getConfig().getConfigurationSection("Arenas." + arenaName + ".spawn") != null) {
 			spawnList = main.getConfig().getConfigurationSection("Arenas." + arenaName + ".spawn").getKeys(false);
 		}
-		
+
 		if(spawnList != null && spawnList.size() > 0) {
 			spawnCount = spawnList.size();
 		} else {
