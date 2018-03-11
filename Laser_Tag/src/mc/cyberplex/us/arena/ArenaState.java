@@ -12,6 +12,7 @@ import org.bukkit.potion.PotionEffectType;
 import mc.cyberplex.us.Main;
 import mc.cyberplex.us.Timer;
 import mc.cyberplex.us.kits.GetKitItems;
+import mc.cyberplex.us.listeners.JoinSign;
 import net.md_5.bungee.api.ChatColor;
 
 public class ArenaState {
@@ -21,6 +22,7 @@ public class ArenaState {
 	PlayerList playerList = new PlayerList();
 	GetKitItems kit = new GetKitItems();
 	Timer time = new Timer();
+	JoinSign joinSign = new JoinSign();
 
 	public void waiting(String arenaName){		
 
@@ -48,10 +50,11 @@ public class ArenaState {
 
 			//set the arena state to running
 			main.getConfig().set("Arenas." + arenaName + ".state", "running");
+			joinSign.updateSign(arenaName);
 
 			int arenaNum = data.getArenaNum(arenaName);
 
-			time.stopTimer(data.getArena(arenaNum).Timer);
+			time.stopTimer(data.getArena(arenaNum).Timer);			
 
 			//get each player in the arena and teleport them into the arena
 			for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {

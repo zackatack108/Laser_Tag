@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -74,7 +75,7 @@ public class ArenaData {
 	public void addPlayer(Player player){
 
 		inGame[gameCount] = new String();
-		
+
 		if(player == null) {
 
 			inGame[gameCount] = null;
@@ -89,54 +90,54 @@ public class ArenaData {
 		}
 
 	}
-	
+
 	public void removePlayer(Player player) {
-		
+
 		int max = getInGameCount();
-		
+
 		if(max-1 <= 0) {
 			max = 0;
 		}
-		
+
 		String [] tempPlayers = new String[max];
 		int [] tempScores = new int[max];
 		int count = 0;
-		
+
 		for(int index = 0; index < max; index++ ) {
-			
+
 			UUID playerID = UUID.fromString(inGame[index]);
 			Player inGamePlayer = Bukkit.getPlayer(playerID);
-			
+
 			if(inGamePlayer != player) {
 				tempPlayers[count] = inGame[index];
 				tempScores[count] = playerScores[index];
 				count++;
 			}
-			
+
 		}
-		
+
 		if(count != 0) {
-			
+
 			//decrement max by one
 			--max;
 			gameCount = 0;
-			
+
 			//move the temp data to the original data 
 			for(int index = 0; index < max; index++) {
 				inGame[index] = tempPlayers[index];
 				playerScores[index] = tempScores[index];
 				gameCount++;
 			}
-			
+
 		} else {
-			
+
 			inGame = new String[MAX];
 			playerScores = new int[MAX];
 			gameCount = 0;
 			return;
-			
+
 		}
-		
+
 	}
 
 	public void setInGameCount(int count) {
@@ -253,6 +254,21 @@ public class ArenaData {
 
 	public void setTimeMsg(String msg) {
 		timeMsg = msg;
+	}
+
+	public void setJoinSign(String arenaName, Block sign) {
+
+		float signX = sign.getX(),
+				signY = sign.getY(),
+				signZ = sign.getZ();
+		String world = sign.getWorld().getName();						
+
+		main.getConfig().set("Arenas." + arenaName + ".join sign.world", world);
+		main.getConfig().set("Arenas." + arenaName + ".join sign.x", signX);
+		main.getConfig().set("Arenas." + arenaName + ".join sign.y", signY);
+		main.getConfig().set("Arenas." + arenaName + ".join sign.z", signZ);
+		main.saveConfig();
+
 	}
 
 	//---------------------------------------------------
@@ -393,6 +409,19 @@ public class ArenaData {
 
 	public String getTimeMsg() {
 		return timeMsg;
+	}
+
+	public Location getSign(String arenaName) {
+
+		float x = main.getConfig().getInt("Arenas." + arenaName + ".join sign.x"),
+				y = main.getConfig().getInt("Arenas." + arenaName + ".join sign.y"),
+				z = main.getConfig().getInt("Arenas." + arenaName + ".join sign.z");
+		String world = main.getConfig().getString("Arenas." + arenaName + ".join sign.world");
+
+		Location signLocation = new Location(Bukkit.getServer().getWorld(world), x, y, z);
+
+		return signLocation;
+
 	}
 
 	//-------------------

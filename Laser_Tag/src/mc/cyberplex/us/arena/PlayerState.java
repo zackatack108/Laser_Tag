@@ -4,13 +4,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import mc.cyberplex.us.Main;
+import mc.cyberplex.us.Timer;
+import mc.cyberplex.us.listeners.JoinSign;
 import net.md_5.bungee.api.ChatColor;
 
 public class PlayerState {
 
 	Main main = Main.getMain();
 	PlayerList getPlayerList = new PlayerList();
-	ArenaData data = new ArenaData();;
+	ArenaData data = new ArenaData();
+	JoinSign joinSign = new JoinSign();
 
 	String state;
 
@@ -34,32 +37,40 @@ public class PlayerState {
 			ArenaState arenaState = new ArenaState();
 			arenaState.waiting(arenaName);
 			getPlayerList.getPlayer(arenaName, Message.LOBBY);
+			joinSign.updateSign(arenaName);
 			//--------------------------------------------------------------------------------------------------
 
 		}
 
 	}
 
-	public void leaveGame(String arenaName, Player player){	
-
+	public void leaveGame(String arenaName, Player player){
+		
 		state = main.getConfig().getString("Arenas." + arenaName + ".state");		
-		int arenaNum = data.getArenaNum(arenaName);	
-
+		int arenaNum = data.getArenaNum(arenaName);
+		
 		if(state.equalsIgnoreCase("running")){
-
+			
 			//checks to see if the total players is less then the minimum for arena
-			if(data.getArena(arenaNum).getInGameCount()-1 < data.getMinPlayers(arenaName)){
-
+			if(data.getArena(arenaNum).getInGameCount()-1 <= data.getMinPlayers(arenaName)){
+				
 				main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
 				ArenaState arenaState = new ArenaState();
-
+				
 				//stops the arena
 				arenaState.stop(arenaName);
-
 				return;
-
 			}
-
+			
+		} else if(state.equalsIgnoreCase("waiting for players")) {
+			
+			if(data.getArena(arenaNum).getInGameCount()-1 <= data.getMinPlayers(arenaName)){
+				
+				Timer time = new Timer();
+				time.stopTimer(data.getArena(arenaNum).Timer);
+				
+			}
+			
 		}
 
 		//--------------------------------------------------------------------------------------------------
@@ -73,6 +84,7 @@ public class PlayerState {
 			player.sendMessage(ChatColor.YELLOW + "Sending you to the laser tag hub.");	
 		}
 		data.getArena(arenaNum).removePlayer(player);
+		joinSign.updateSign(arenaName);
 		//--------------------------------------------------------------------------------------------------
 
 		//--------------------------------------------------------------------------------------------------

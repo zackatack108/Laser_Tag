@@ -9,6 +9,7 @@ import mc.cyberplex.us.arena.ArenaState;
 import mc.cyberplex.us.kits.KitListeners;
 import mc.cyberplex.us.listeners.GunFire;
 import mc.cyberplex.us.listeners.InventoryMove;
+import mc.cyberplex.us.listeners.JoinSign;
 import mc.cyberplex.us.listeners.PlayerDeath;
 import mc.cyberplex.us.listeners.PlayerJoin;
 import mc.cyberplex.us.listeners.PlayerLeaveGame;
@@ -41,6 +42,7 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
 		getServer().getPluginManager().registerEvents(new InventoryMove(), this);
 		getServer().getPluginManager().registerEvents(new PlayerLeaveGame(), this);
+		getServer().getPluginManager().registerEvents(new JoinSign(), this);
 		
 	}
 	
