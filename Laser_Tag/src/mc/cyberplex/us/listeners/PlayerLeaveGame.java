@@ -79,7 +79,7 @@ public class PlayerLeaveGame implements Listener{
 		
 		Player player = event.getPlayer();
 		
-		if(inArena == true) {
+		if(main.getConfig().getString("Arenas." + arena + ".state").equalsIgnoreCase("running") && inArena == true) {
 			
 			int arenaNum = data.getArenaNum(arena);
 			
@@ -88,17 +88,18 @@ public class PlayerLeaveGame implements Listener{
 			
 			for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
 				
-				if(data.getArena(arenaNum).getInGame(index).equals(player.getUniqueId().toString())) {
-					
-					data.getArena(arenaNum).setPlayerScore(index, tempScore);
-					
+				if(data.getArena(arenaNum).getInGame(index).equals(player.getUniqueId().toString())) {					
+					data.getArena(arenaNum).setPlayerScore(index, tempScore);					
 				}
 				
-			}
-			
+			}			
 
 			playerList.getPlayer(arena, Message.GAME);
 			player.setHealth(0);
+			
+		} else {
+			
+			rejoinTime.cancel();
 			
 		}
 		

@@ -36,7 +36,6 @@ public class PlayerState {
 			data.getArena(arenaNum).addPlayer(player);
 			ArenaState arenaState = new ArenaState();
 			arenaState.waiting(arenaName);
-			getPlayerList.getPlayer(arenaName, Message.LOBBY);
 			joinSign.updateSign(arenaName);
 			//--------------------------------------------------------------------------------------------------
 
@@ -52,7 +51,7 @@ public class PlayerState {
 		if(state.equalsIgnoreCase("running")){
 			
 			//checks to see if the total players is less then the minimum for arena
-			if(data.getArena(arenaNum).getInGameCount()-1 <= data.getMinPlayers(arenaName)){
+			if(data.getArena(arenaNum).getInGameCount()-1 < data.getMinPlayers(arenaName)){
 				
 				main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
 				ArenaState arenaState = new ArenaState();
@@ -67,7 +66,7 @@ public class PlayerState {
 			if(data.getArena(arenaNum).getInGameCount()-1 <= data.getMinPlayers(arenaName)){
 				
 				Timer time = new Timer();
-				time.stopTimer(data.getArena(arenaNum).Timer);
+				time.stopTimer(arenaName);
 				
 			}
 			

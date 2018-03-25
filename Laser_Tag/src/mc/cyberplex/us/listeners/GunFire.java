@@ -48,14 +48,16 @@ public class GunFire implements Listener{
 			
 			boolean inArena = false;
 			String arenaName = null;
+			int tempArenaNum = -1;
 			int arenaNum = -1;
 
 			for(String arena : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
-				arenaNum = data.getArenaNum(arena);
-				for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
-					if(data.getArena(arenaNum).getInGame(count).equals(playerID)) {
+				tempArenaNum = data.getArenaNum(arena);
+				for(int count = 0; count < data.getArena(tempArenaNum).getInGameCount(); count++) {
+					if(data.getArena(tempArenaNum).getInGame(count).equals(playerID)) {
 						inArena = true;
 						arenaName = arena;
+						arenaNum = data.getArenaNum(arenaName);
 					}
 				}
 			}

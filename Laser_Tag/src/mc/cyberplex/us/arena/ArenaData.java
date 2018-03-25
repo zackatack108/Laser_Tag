@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import mc.cyberplex.us.Main;
 
@@ -30,7 +31,7 @@ public class ArenaData {
 	private static ArenaData[] arenaList = null;
 	public static Random rand = new Random();
 
-	public int Timer = 0;
+	public BukkitTask Timer = null;
 
 	//non static data types
 	//player game data types
@@ -71,7 +72,7 @@ public class ArenaData {
 
 	//--------------------
 	//setters for class
-	//--------------------
+	//--------------------	
 	public void addPlayer(Player player){
 
 		inGame[gameCount] = new String();
@@ -120,6 +121,7 @@ public class ArenaData {
 
 			//decrement max by one
 			--max;
+			
 			gameCount = 0;
 
 			//move the temp data to the original data 
@@ -138,6 +140,14 @@ public class ArenaData {
 
 		}
 
+	}
+	
+	public void emptyPlayers() {
+		
+		inGame = new String[MAX];
+		playerScores = new int[MAX];
+		gameCount = 0;
+		
 	}
 
 	public void setInGameCount(int count) {

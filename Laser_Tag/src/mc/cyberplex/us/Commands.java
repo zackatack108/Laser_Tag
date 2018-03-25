@@ -18,7 +18,6 @@ public class Commands implements CommandExecutor{
 	Main main = Main.getMain();
 	Shop shop = new Shop();
 	ArenaData data = new ArenaData();
-	ArenaState state = new ArenaState();
 	PlayerState playerState = new PlayerState();
 
 	//create error messages for commands
@@ -223,6 +222,8 @@ public class Commands implements CommandExecutor{
 								player.sendMessage(ChatColor.RED + "Sorry, the arena is currently running");
 
 							} else {
+								
+								ArenaState state = new ArenaState();
 
 								//start the arena
 								state.start(args[1].toLowerCase());
@@ -270,6 +271,8 @@ public class Commands implements CommandExecutor{
 							} else {
 								
 								main.getConfig().set("Arenas." + args[1].toLowerCase() + ".state", "stopping");
+								
+								ArenaState state = new ArenaState();
 
 								//stop the arena
 								state.stop(args[1].toLowerCase());

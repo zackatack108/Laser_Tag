@@ -21,10 +21,10 @@ public class ArenaState {
 	ArenaData data = new ArenaData();
 	PlayerList playerList = new PlayerList();
 	GetKitItems kit = new GetKitItems();
-	Timer time = new Timer();
 	JoinSign joinSign = new JoinSign();
+	Timer time = new Timer();
 
-	public void waiting(String arenaName){		
+	public void waiting(String arenaName){
 
 		int arenaNum = data.getArenaNum(arenaName);
 
@@ -36,7 +36,7 @@ public class ArenaState {
 
 		} else if(data.getArena(arenaNum).getInGameCount() == data.getMaxPlayers(arenaName)) {
 
-			time.stopTimer(data.getArena(arenaNum).Timer);
+			time.stopTimer(arenaName);
 			time.lobbyTime(arenaName, 1);
 
 		}
@@ -45,40 +45,35 @@ public class ArenaState {
 
 	public void start(String arenaName){
 
-		//check if the arena exist
-		if(main.getConfig().contains("Arenas." + arenaName)) {
+		//set the arena state to running
+		main.getConfig().set("Arenas." + arenaName + ".state", "running");
+		joinSign.updateSign(arenaName);
 
-			//set the arena state to running
-			main.getConfig().set("Arenas." + arenaName + ".state", "running");
-			joinSign.updateSign(arenaName);
+		int arenaNum = data.getArenaNum(arenaName);
 
-			int arenaNum = data.getArenaNum(arenaName);
+		time.stopTimer(arenaName);
+		
+		time.gameTime(arenaName, 30);
 
-			time.stopTimer(data.getArena(arenaNum).Timer);			
+		//get each player in the arena and teleport them into the arena
+		for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
 
-			//get each player in the arena and teleport them into the arena
-			for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+			//get the player from the arena
+			UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(index));
+			Player player = Bukkit.getPlayer(playerID);
 
-				//get the player from the arena
-				UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(index));
-				Player player = Bukkit.getPlayer(playerID);
+			player.setGameMode(GameMode.SURVIVAL);
 
-				player.setGameMode(GameMode.SURVIVAL);
+			//teleport the player to the arena to a random spawn point				
+			Location spawn = data.getSpawn(arenaName);
+			player.teleport(spawn);
+			playerList.getPlayer(arenaName, Message.GAME);
 
-				//teleport the player to the arena to a random spawn point				
-				Location spawn = data.getSpawn(arenaName);
-				player.teleport(spawn);
-				playerList.getPlayer(arenaName, Message.GAME);
+			//get the gun type that the player has and give it to them
+			ItemStack gun = new ItemStack(kit.getGunType(player));				
+			player.getInventory().addItem(gun);
 
-				//get the gun type that the player has and give it to them
-				ItemStack gun = new ItemStack(kit.getGunType(player));				
-				player.getInventory().addItem(gun);
-
-				data.getArena(arenaNum).setPlayerScore(index, 0);
-
-			}
-
-			time.gameTime(arenaName, 30);
+			data.getArena(arenaNum).setPlayerScore(index, 0);
 
 		}
 
@@ -101,19 +96,19 @@ public class ArenaState {
 					winner = Bukkit.getPlayer(UUID.fromString(data.getArena(arenaNum).getInGame(index)));
 				}
 			}
-			
+
 			for(int index = 0; index < gameCount; index++) {
-				
+
 				//get the player UUID from the in game list
 				UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(index));
 				Player player = Bukkit.getPlayer(playerID);	
-				
+
 				if(data.getArena(arenaNum).getPlayerScore(highScore) == 0) {
 					player.sendMessage(ChatColor.BLUE + "Score was tied");
 				} else {
 					player.sendMessage(ChatColor.BLUE + "The winner is: " + ChatColor.GREEN + winner.getName());
 				}
-				
+
 			}
 
 			for(int index = 0; index < gameCount; index++) {
@@ -125,7 +120,7 @@ public class ArenaState {
 				player.setGameMode(GameMode.SURVIVAL);
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
 				player.setHealth(20);
-				
+
 				PlayerState playerState = new PlayerState();
 				playerState.leaveGame(arenaName, player);
 
@@ -134,6 +129,8 @@ public class ArenaState {
 			if(data.getArena(arenaNum).getInGameCount() == 0) {
 				main.getConfig().set("Arenas." + arenaName + ".state", "waiting for players");
 			}
+
+			data.getArena(arenaNum).emptyPlayers();
 
 		}
 
