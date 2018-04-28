@@ -47,7 +47,7 @@ public class Timer {
 
 					if(seconds == 0) {
 
-						stopTimer(arenaName);
+						cancel();
 
 						ArenaState state = new ArenaState();
 						state.start(arenaName);
@@ -96,7 +96,7 @@ public class Timer {
 
 						main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
 
-						stopTimer(arenaName);
+						cancel();
 
 						ArenaState state = new ArenaState();
 						state.stop(arenaName);
