@@ -74,7 +74,7 @@ public class GunFire implements Listener{
 					this.otherPlayerLoc = otherPlayer.getLocation();					
 				}
 
-				start.setY(start.getY() - 0.5D);
+				start.setY(start.getY() - 0.2D);
 
 				int coolDownTime = this.kit.getReloadTime(player);
 

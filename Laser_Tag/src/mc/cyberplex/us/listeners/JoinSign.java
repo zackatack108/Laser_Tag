@@ -58,43 +58,44 @@ public class JoinSign implements Listener{
 		Player player = event.getPlayer();
 		Boolean inGame = false;
 
-		if((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK)
-				&& event.getClickedBlock().getState() instanceof Sign) {
+		if((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) && event.getClickedBlock().getState() instanceof Sign) {
 
 			Sign sign = (Sign) event.getClickedBlock().getState();
 			String arenaName = ChatColor.stripColor(sign.getLine(2)).toLowerCase();
 
-			if(ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("join") 
-					&& sign.getBlock().getLocation().equals(data.getSign(arenaName)) 
-					&& main.getConfig().contains("Arenas." + arenaName)) {
+			if(main.getConfig().contains("Arenas." + arenaName)) {
 
-				for(String name : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
+				if(ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("join") && sign.getBlock().getLocation().equals(data.getSign(arenaName))) {
 
-					int arenaNum = data.getArenaNum(name);
+					for(String name : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
 
-					for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+						int arenaNum = data.getArenaNum(name);
 
-						if(player.getUniqueId().toString().equals(data.getArena(arenaNum).getInGame(index))) {
+						for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
 
-							inGame = true;
+							if(player.getUniqueId().toString().equals(data.getArena(arenaNum).getInGame(index))) {
 
-							player.sendMessage(ChatColor.RED + "Sorry, you are currently in a game. Do /lt leave");
+								inGame = true;
 
-						} else {
-							inGame = false;
+								player.sendMessage(ChatColor.RED + "Sorry, you are currently in a game. Do /lt leave");
+
+							} else {
+								inGame = false;
+							}
+
 						}
 
 					}
 
-				}
+					if(inGame == false) {
+						PlayerState playerState = new PlayerState();
+						playerState.joinGame(player, arenaName);
+					}
 
-				if(inGame == false) {
-					PlayerState playerState = new PlayerState();
-					playerState.joinGame(player, arenaName);
 				}
 
 			}
-
+			
 		}
 
 	}
