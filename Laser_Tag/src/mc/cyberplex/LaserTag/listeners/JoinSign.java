@@ -1,5 +1,6 @@
 package mc.cyberplex.LaserTag.listeners;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -12,14 +13,13 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import mc.cyberplex.LaserTag.Main;
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 import mc.cyberplex.LaserTag.arena.PlayerState;
-import net.md_5.bungee.api.ChatColor;
 
 public class JoinSign implements Listener{
 
 	Main main = Main.getMain();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 
 	@EventHandler
 	public void onSignCreate(SignChangeEvent event) {
@@ -42,7 +42,7 @@ public class JoinSign implements Listener{
 					event.setLine(0, ChatColor.DARK_RED + "" + ChatColor.BOLD + "[Laser tag]");
 					event.setLine(1, ChatColor.GOLD + "Join");
 					event.setLine(2, ChatColor.BLUE + arenaName.substring(0,1).toUpperCase() + arenaName.substring(1));
-					event.setLine(3, ChatColor.GRAY + "" + data.getArena(arenaNum).getInGameCount() + " / " + data.getMaxPlayers(arenaName));
+					event.setLine(3, ChatColor.GRAY + "" + data.getArena(arenaNum).getGameCount() + " / " + data.getMaxPlayers(arenaName));
 
 				}
 
@@ -65,18 +65,17 @@ public class JoinSign implements Listener{
 
 			if(main.getConfig().contains("Arenas." + arenaName)) {
 
-				if(ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("join") && sign.getBlock().getLocation().equals(data.getSign(arenaName))) {
+				if(ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("join") && sign.getBlock().getLocation().equals(data.getJoinSign(arenaName))) {
 
 					for(String name : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
 
 						int arenaNum = data.getArenaNum(name);
 
-						for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+						for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 
-							if(player.getUniqueId().toString().equals(data.getArena(arenaNum).getInGame(index))) {
+							if(player.getUniqueId().equals(data.getArena(arenaNum).getPlayer(index))) {
 
 								inGame = true;
-
 								player.sendMessage(ChatColor.RED + "Sorry, you are currently in a game. Do /lt leave");
 
 							} else {
@@ -104,7 +103,7 @@ public class JoinSign implements Listener{
 
 		String arenaState = main.getConfig().getString("Arenas." + arenaName + ".state");
 
-		Location signLocation = data.getSign(arenaName);
+		Location signLocation = data.getJoinSign(arenaName);
 
 		Block block = signLocation.getWorld().getBlockAt(signLocation);
 		BlockState state = block.getState();
@@ -114,7 +113,7 @@ public class JoinSign implements Listener{
 		Sign sign = (Sign) state;
 
 		if(arenaState.equalsIgnoreCase("waiting for players") || arenaState.equalsIgnoreCase("stopping")) {
-			sign.setLine(3, ChatColor.GRAY + "" + data.getArena(arenaNum).getInGameCount() + " / " + data.getMaxPlayers(arenaName));
+			sign.setLine(3, ChatColor.GRAY + "" + data.getArena(arenaNum).getGameCount() + " / " + data.getMaxPlayers(arenaName));
 			sign.update();
 		} else if(arenaState.equalsIgnoreCase("running")) {
 			sign.setLine(3, ChatColor.DARK_RED + "Running");

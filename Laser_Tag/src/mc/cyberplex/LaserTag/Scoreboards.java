@@ -12,14 +12,14 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 
 public class Scoreboards {
 
 	Main plugin = Main.getMain();
 
 	Set<String> arenas = plugin.getConfig().getConfigurationSection("Arenas").getKeys(false);
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 
 	ScoreboardManager manager = Bukkit.getScoreboardManager();
 	org.bukkit.scoreboard.Scoreboard board = manager.getNewScoreboard();
@@ -38,12 +38,12 @@ public class Scoreboards {
 		//set up the players 
 		playerCount.addEntry(ChatColor.YELLOW.toString());
 		playerCount.setPrefix(ChatColor.YELLOW + "Players: ");
-		playerCount.setSuffix(ChatColor.WHITE + Integer.toString(data.getArena(arenaNum).getInGameCount()));
+		playerCount.setSuffix(ChatColor.WHITE + Integer.toString(data.getArena(arenaNum).getGameCount()));
 
 		//set up the time 
 		time.addEntry(ChatColor.GREEN.toString());
 		time.setPrefix(ChatColor.GREEN + "Time: ");
-		time.setSuffix(ChatColor.WHITE + data.getArena(arenaNum).getTimeMsg());
+		time.setSuffix(ChatColor.WHITE + data.getLaserTagData(arenaNum).getTimeMsg());
 
 		Score arena = lobbyObjective.getScore(ChatColor.YELLOW + "Arena: " + ChatColor.WHITE + arenaName.substring(0, 1).toUpperCase() + arenaName.substring(1));
 		Score blank = lobbyObjective.getScore("  ");
@@ -68,7 +68,7 @@ public class Scoreboards {
 
 		time.addEntry(ChatColor.GREEN.toString());
 		time.setPrefix(ChatColor.GREEN + "Time: ");
-		time.setSuffix(ChatColor.WHITE + data.getArena(arenaNum).getTimeMsg());
+		time.setSuffix(ChatColor.WHITE + data.getLaserTagData(arenaNum).getTimeMsg());
 
 		Score arena = gameObjective.getScore(ChatColor.YELLOW + "Arena: " + ChatColor.WHITE + arenaName.substring(0,1).toUpperCase() + arenaName.substring(1));
 		Score blank1 = gameObjective.getScore("  ");
@@ -77,12 +77,12 @@ public class Scoreboards {
 
 		int scoreCount = 3;
 
-		for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+		for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 
-			UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(index));
+			UUID playerID = data.getArena(arenaNum).getPlayer(index);
 			Player playerName = Bukkit.getPlayer(playerID);
 
-			int playerScore = data.getArena(arenaNum).getPlayerScore(index);
+			int playerScore = data.getLaserTagData(arenaNum).getPlayerScore(index);
 
 			gameObjective.getScore(ChatColor.BLUE + playerName.getName() + ": " + ChatColor.WHITE + playerScore).setScore(scoreCount);
 

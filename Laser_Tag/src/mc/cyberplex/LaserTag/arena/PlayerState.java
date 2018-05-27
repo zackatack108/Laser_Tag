@@ -12,7 +12,7 @@ public class PlayerState {
 
 	Main main = Main.getMain();
 	PlayerList getPlayerList = new PlayerList();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	JoinSign joinSign = new JoinSign();
 
 	String state;
@@ -31,7 +31,7 @@ public class PlayerState {
 			//puts the player in arena, saves their inventory and will send them the scoreboard
 			//--------------------------------------------------------------------------------------------------
 			int arenaNum = data.getArenaNum(arenaName);
-			ArenaData.saveInventory(player);
+			Arena.saveInventory(player);
 			player.teleport(data.getLobby(arenaName));
 			data.getArena(arenaNum).addPlayer(player);
 			ArenaState arenaState = new ArenaState();
@@ -51,19 +51,20 @@ public class PlayerState {
 		if(state.equalsIgnoreCase("running")){
 			
 			//checks to see if the total players is less then the minimum for arena
-			if(data.getArena(arenaNum).getInGameCount()-1 < data.getMinPlayers(arenaName)){
+			if(data.getArena(arenaNum).getGameCount()-1 < data.getMinPlayers(arenaName)){
 				
 				main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
-				ArenaState arenaState = new ArenaState();
 				
 				//stops the arena
+				ArenaState arenaState = new ArenaState();				
 				arenaState.stop(arenaName);
+				
 				return;
 			}
 			
 		} else if(state.equalsIgnoreCase("waiting for players")) {
 			
-			if(data.getArena(arenaNum).getInGameCount()-1 <= data.getMinPlayers(arenaName)){
+			if(data.getArena(arenaNum).getGameCount()-1 <= data.getMinPlayers(arenaName)){
 				
 				Timer time = new Timer();
 				time.stopTimer(arenaName);
@@ -76,7 +77,7 @@ public class PlayerState {
 		//this bit actually will remove the player from the arena and take them back to hub with their stuff
 		//--------------------------------------------------------------------------------------------------
 		if(player != null) {
-			ArenaData.returnInventory(player);
+			Arena.returnInventory(player);
 			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());		
 			player.teleport(data.getHub());
 			player.sendMessage(ChatColor.YELLOW + "Leaving laser tag arena");

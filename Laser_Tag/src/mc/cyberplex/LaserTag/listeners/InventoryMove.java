@@ -6,12 +6,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import mc.cyberplex.LaserTag.Main;
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 
 public class InventoryMove implements Listener{
 	
 	Main main = Main.getMain();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	
 	@EventHandler
 	public void denyInventoryMove(InventoryClickEvent event) {
@@ -22,9 +22,9 @@ public class InventoryMove implements Listener{
 			
 			int arenaNum = data.getArenaNum(arenaName);
 			
-			for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
+			for(int count = 0; count < data.getArena(arenaNum).getGameCount(); count++) {
 				
-				if(player.getUniqueId().toString().equals(data.getArena(arenaNum).getInGame(count))) {
+				if(player.getUniqueId().equals(data.getArena(arenaNum).getPlayer(count))) {
 					event.setCancelled(true);
 				}
 				

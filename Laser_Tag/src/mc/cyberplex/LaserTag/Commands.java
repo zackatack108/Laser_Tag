@@ -1,23 +1,24 @@
 package mc.cyberplex.LaserTag;
 
 import java.util.Set;
+import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 import mc.cyberplex.LaserTag.arena.ArenaState;
 import mc.cyberplex.LaserTag.arena.PlayerState;
 import mc.cyberplex.LaserTag.kits.Shop;
-import net.md_5.bungee.api.ChatColor;
 
 public class Commands implements CommandExecutor{
 
 	Main main = Main.getMain();
 	Shop shop = new Shop();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	PlayerState playerState = new PlayerState();
 
 	//create error messages for commands
@@ -34,7 +35,7 @@ public class Commands implements CommandExecutor{
 	public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args) {
 
 		Player player = (Player) sender;
-		String playerID = player.getUniqueId().toString();
+		UUID playerID = player.getUniqueId();
 
 		if(cmd.getName().equalsIgnoreCase("lt")) {
 
@@ -124,9 +125,9 @@ public class Commands implements CommandExecutor{
 
 						int arenaNum = data.getArenaNum(arenaName);
 
-						for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
+						for(int count = 0; count < data.getArena(arenaNum).getGameCount(); count++) {
 
-							if(data.getArena(arenaNum).getInGame(count).equals(player.getUniqueId().toString())) {
+							if(data.getArena(arenaNum).getPlayer(count).equals(player.getUniqueId())) {
 								inGame = true;								
 							}
 
@@ -179,9 +180,9 @@ public class Commands implements CommandExecutor{
 
 						int arenaNum = data.getArenaNum(arena);
 
-						for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
+						for(int count = 0; count < data.getArena(arenaNum).getGameCount(); count++) {
 
-							if(data.getArena(arenaNum).getInGame(count).equals(playerID)) {
+							if(data.getArena(arenaNum).getPlayer(count).equals(playerID)) {
 								arenaName = arena;
 								inArena = true;
 							}
@@ -216,7 +217,7 @@ public class Commands implements CommandExecutor{
 						if(main.getConfig().contains("Arenas." + args[1].toLowerCase())) {
 
 							//check if the arena is currently running
-							if(main.getConfig().getString("Arenas." + args[1].toLowerCase() + ".state").equalsIgnoreCase("running")) {
+							if(data.getState(args[1].toLowerCase()).equalsIgnoreCase("running")) {
 
 								//display error message to user
 								player.sendMessage(ChatColor.RED + "Sorry, the arena is currently running");
@@ -263,14 +264,14 @@ public class Commands implements CommandExecutor{
 						//check if arena name exist in config
 						if(main.getConfig().contains("Arenas." + args[1].toLowerCase())) {
 
-							if(main.getConfig().getString("Arenas." + args[1].toLowerCase() + ".state").equalsIgnoreCase("waiting for players")) {
+							if(data.getState(args[1].toLowerCase()).equalsIgnoreCase("waiting for players")) {
 
 								//display error message to user
 								player.sendMessage(ChatColor.RED + "Sorry, the arena is currently not running");
 								
 							} else {
 								
-								main.getConfig().set("Arenas." + args[1].toLowerCase() + ".state", "stopping");
+								data.setState(args[1].toLowerCase(), "stopping");
 								
 								ArenaState state = new ArenaState();
 
@@ -325,13 +326,8 @@ public class Commands implements CommandExecutor{
 							player.sendMessage(ChatColor.GREEN + "Creating laser tag arena " + arenaName);
 
 							//save arena to the config
-							main.getConfig().set("Arenas." + arenaName, arenaName);
-							main.getConfig().set("Arenas." + arenaName + ".min", 2);
-							main.getConfig().set("Arenas." + arenaName + ".max", 4);
-							main.getConfig().set("Arenas." + arenaName + ".state", "waiting for players");
-							main.saveConfig();
+							data.addArena(arenaName);
 							
-							ArenaData.updateArenaList();
 							player.sendMessage(ChatColor.GREEN + "Laser tag arena " + arenaName + " created");
 
 						}
@@ -365,10 +361,7 @@ public class Commands implements CommandExecutor{
 						if(main.getConfig().contains("Arenas." + arenaName)) {
 
 							//remove arena from config
-							main.getConfig().set("Arenas." + arenaName, null);
-							main.saveConfig();
-							
-							ArenaData.updateArenaList();
+							data.removeArena(arenaName);
 
 							//send message to player saying the arena was removed
 							player.sendMessage(ChatColor.YELLOW + "Removing laser tag arena " + arenaName);
@@ -414,8 +407,7 @@ public class Commands implements CommandExecutor{
 							int minNum = Integer.parseInt(args[2]);
 
 							//save min players to config
-							main.getConfig().set("Arenas." + arenaName + ".min", minNum);
-							main.saveConfig();
+							data.setMinPlayers(arenaName, minNum);
 
 							//send message to player saying minimum players was set
 							player.sendMessage(ChatColor.GREEN + "Minimum players set to " + minNum + " for arena " + arenaName);
@@ -460,8 +452,7 @@ public class Commands implements CommandExecutor{
 							int maxNum = Integer.parseInt(args[2]);
 
 							//save max players to config
-							main.getConfig().set("Arenas." + arenaName + ".max", maxNum);
-							main.saveConfig();
+							data.setMaxPlayers(arenaName, maxNum);
 
 							//send message to player saying maximum players was set
 							player.sendMessage(ChatColor.GREEN + "Maximum players set to " + maxNum + " for arena " + arenaName);
@@ -501,8 +492,8 @@ public class Commands implements CommandExecutor{
 						//reload config
 						main.reloadConfig();
 						main.saveConfig();
-
-						ArenaData.updateArenaList();
+						
+						data.setArenaList();
 						
 						//display message to player saying config was reloaded
 						player.sendMessage(ChatColor.GREEN + "Laser tag config reloaded");
@@ -611,8 +602,8 @@ public class Commands implements CommandExecutor{
 					
 					for(String arena : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
 						arenaNum = data.getArenaNum(arena);
-						for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
-							if(data.getArena(arenaNum).getInGame(count).equals(playerID)) {
+						for(int count = 0; count < data.getArena(arenaNum).getGameCount(); count++) {
+							if(data.getArena(arenaNum).getPlayer(count).equals(playerID)) {
 								inArena = true;
 							}
 						}
@@ -684,7 +675,7 @@ public class Commands implements CommandExecutor{
 							if(main.getConfig().contains("Arenas." + args[2].toLowerCase())) {
 
 								//save the spawn to the config for the arena
-								data.setSpawn(player, args[2].toLowerCase());
+								data.addSpawn(args[2].toLowerCase(), player);
 
 								//send a message to the player about the spawn being created
 								player.sendMessage(ChatColor.GREEN + "Spawn point created");
@@ -712,7 +703,7 @@ public class Commands implements CommandExecutor{
 							if(main.getConfig().contains("Arenas." + args[2].toLowerCase())) {
 
 								//save the lobby to the config for the arena
-								data.setLobby(player, args[2].toLowerCase());
+								data.setLobby(args[2].toLowerCase(), player);
 
 								//send a message to the player about the lobby being created
 								player.sendMessage(ChatColor.GREEN + "Lobby spawn created");
@@ -760,8 +751,7 @@ public class Commands implements CommandExecutor{
 						if(player.hasPermission("lt.remove.hub")) {
 
 							//remove the hub
-							main.getConfig().set("Hub", null);
-							main.saveConfig();
+							data.removeHub();
 
 							//display message to user
 							player.sendMessage(ChatColor.GREEN + "Hub removed");
@@ -794,8 +784,7 @@ public class Commands implements CommandExecutor{
 							if(main.getConfig().contains("Arenas." + args[2].toLowerCase())) {
 
 								//remove the lobby
-								main.getConfig().set("Arenas." + args[2].toLowerCase() +".lobby", null);
-								main.saveConfig();
+								data.removeLobby(args[2].toLowerCase());
 
 								//display message to user
 								player.sendMessage(ChatColor.GREEN + "Lobby removed");
@@ -838,8 +827,7 @@ public class Commands implements CommandExecutor{
 								if(main.getConfig().contains("Arenas." + args[2].toLowerCase() +".spawn." + args[3])) {
 
 									//remove the spawn
-									main.getConfig().set("Arenas." + args[2].toLowerCase() +".spawn." + args[3], null);
-									main.saveConfig();
+									data.removeSpawn(args[2].toLowerCase(), Integer.parseInt(args[3]));
 
 									//display message to user
 									player.sendMessage(ChatColor.RED + "Spawn removed");

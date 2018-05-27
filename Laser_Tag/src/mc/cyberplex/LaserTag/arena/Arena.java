@@ -35,6 +35,7 @@ public class Arena {
 	private int minutes, seconds;
 	private static ArrayList<String> arenaNames = new ArrayList<String>();
 	private static ArrayList<Arena> arenaData = new ArrayList<Arena>();
+	private static ArrayList<LaserTagData> laserTagData = new ArrayList<LaserTagData>();
 	private ArrayList<UUID> playerList = new ArrayList<UUID>();
 	public static Random rand = new Random();
 
@@ -45,10 +46,15 @@ public class Arena {
 
 				Set<String> tempArenas = main.getConfig().getConfigurationSection("Arenas").getKeys(false);
 				String [] name = new String[tempArenas.size()];
+				
+				arenaNames = new ArrayList<String>();
+				arenaData = new ArrayList<Arena>();
+				laserTagData = new ArrayList<LaserTagData>();
 
 				for(int i = 0; i < tempArenas.size(); i++) {				
 					arenaNames.add(name[i]);
 					arenaData.add(new Arena());
+					laserTagData.add(new LaserTagData());
 				}
 
 			}
@@ -65,7 +71,6 @@ public class Arena {
 
 			//save arena to the config
 			main.getConfig().set("Arenas." + name, name);
-			main.getConfig().set("Arenas." + name + ".time", 30);
 			main.getConfig().set("Arenas." + name + ".min", 2);
 			main.getConfig().set("Arenas." + name + ".max", 4);
 			main.getConfig().set("Arenas." + name + ".state", "waiting for players");
@@ -264,12 +269,16 @@ public class Arena {
 		if(name != null) {
 
 			if(main.getConfig().contains("Arenas." + name)) {
+				
+				int arenaNum = getArenaNum(name);
 
 				main.getConfig().set("Arenas." + name, null);
 				main.saveConfig();
 
 				if(arenaNames.isEmpty() == false) {
 					arenaNames.remove(name);
+					arenaData.remove(arenaNum);
+					laserTagData.remove(arenaNum);
 				}
 
 			}
@@ -394,6 +403,19 @@ public class Arena {
 		}
 
 		return arenaData.get(index);
+	}
+	
+	public LaserTagData getLaserTagData(int index) {
+		
+		if(index < 0 || index > arenaNames.size()) {
+			return null;
+		}
+		if(laserTagData.size() <= index) {
+			laserTagData.add(index, new LaserTagData());
+		}
+		
+		return laserTagData.get(index);
+		
 	}
 
 	public int getArenaNum(String arenaName) {

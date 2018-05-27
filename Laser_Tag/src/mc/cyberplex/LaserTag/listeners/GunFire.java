@@ -2,6 +2,7 @@ package mc.cyberplex.LaserTag.listeners;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,7 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import mc.cyberplex.LaserTag.Main;
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 import mc.cyberplex.LaserTag.arena.ArenaState;
 import mc.cyberplex.LaserTag.arena.Message;
 import mc.cyberplex.LaserTag.arena.PlayerList;
@@ -31,7 +32,7 @@ public class GunFire implements Listener{
 	Main main = Main.getMain();
 	GetKitItems kit = new GetKitItems();
 	PlayerList playerList = new PlayerList();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	ArenaState state = new ArenaState();
 
 	Location otherPlayerLoc = null;
@@ -44,7 +45,7 @@ public class GunFire implements Listener{
 
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_AIR) {
 			
-			String playerID = player.getUniqueId().toString();
+			UUID playerID = player.getUniqueId();
 			
 			boolean inArena = false;
 			String arenaName = null;
@@ -53,8 +54,8 @@ public class GunFire implements Listener{
 
 			for(String arena : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
 				tempArenaNum = data.getArenaNum(arena);
-				for(int count = 0; count < data.getArena(tempArenaNum).getInGameCount(); count++) {
-					if(data.getArena(tempArenaNum).getInGame(count).equals(playerID)) {
+				for(int count = 0; count < data.getArena(tempArenaNum).getGameCount(); count++) {
+					if(data.getArena(tempArenaNum).getPlayer(count).equals(playerID)) {
 						inArena = true;
 						arenaName = arena;
 						arenaNum = data.getArenaNum(arenaName);
@@ -125,18 +126,19 @@ public class GunFire implements Listener{
 							}
 						}.runTaskLater(this.main, 1L);
 						
-						for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+						for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 							
-							if(data.getArena(arenaNum).getInGame(index).equals(playerID)) {
+							if(data.getArena(arenaNum).getPlayer(index).equals(playerID)) {
 								
-								int oldScore = data.getArena(arenaNum).getPlayerScore(index);
-								data.getArena(arenaNum).setPlayerScore(index, ++oldScore);
+								int oldScore = data.getLaserTagData(arenaNum).getPlayerScore(index);
+								data.getLaserTagData(arenaNum).setPlayerScore(index, ++oldScore);
 								playerList.getPlayer(arenaName, Message.GAME);
 								
-								if(data.getArena(arenaNum).getPlayerScore(index) >= data.getScoreToWin()) {
+								if(data.getLaserTagData(arenaNum).getPlayerScore(index) >= data.getLaserTagData(arenaNum).getScoreToWin()) {
 									
 									main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
-									state.stop(arenaName);		
+									state.stop(arenaName);
+									
 								}
 								
 							}

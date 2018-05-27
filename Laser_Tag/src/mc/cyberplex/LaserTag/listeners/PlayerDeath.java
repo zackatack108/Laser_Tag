@@ -10,13 +10,13 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import mc.cyberplex.LaserTag.Main;
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 import mc.cyberplex.LaserTag.kits.GetKitItems;
 
 public class PlayerDeath implements Listener{
 
 	Main main = Main.getMain();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	GetKitItems kit = new GetKitItems();
 
 	@EventHandler
@@ -32,10 +32,10 @@ public class PlayerDeath implements Listener{
 
 				int arenaNum = data.getArenaNum(arenaName);
 
-				for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+				for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 
 					boolean inGame = false;
-					if(player.getUniqueId().toString().equals(data.getArena(arenaNum).getInGame(index))) {
+					if(player.getUniqueId().equals(data.getArena(arenaNum).getPlayer(index))) {
 						inGame = true;
 					}
 
@@ -43,7 +43,6 @@ public class PlayerDeath implements Listener{
 						
 						event.setDeathMessage(null);
 
-						player.getInventory().clear();
 						event.getDrops().clear();
 						player.setHealth(20);
 						player.setGameMode(GameMode.SPECTATOR);
@@ -71,9 +70,7 @@ public class PlayerDeath implements Listener{
 
 				if(main.getConfig().getString("Arenas." + arenaName + ".state").equalsIgnoreCase("stopping")) {
 					this.cancel();
-				} else {
-
-					player.setLevel(seconds);		
+				} else {	
 
 					if(this.seconds == 0 && main.getConfig().getString("Arenas." + arenaName + ".state").equalsIgnoreCase("running")) {
 

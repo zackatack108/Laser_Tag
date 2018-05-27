@@ -2,7 +2,7 @@ package mc.cyberplex.LaserTag;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 import mc.cyberplex.LaserTag.arena.ArenaState;
 import mc.cyberplex.LaserTag.arena.Message;
 import mc.cyberplex.LaserTag.arena.PlayerList;
@@ -10,7 +10,7 @@ import mc.cyberplex.LaserTag.arena.PlayerList;
 public class Timer {
 
 	Main main = Main.getMain();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	PlayerList playerList = new PlayerList();
 	
 	public void lobbyTime(String arenaName, int time) {
@@ -20,7 +20,7 @@ public class Timer {
 		data.getArena(arenaNum).setSeconds(0);
 		data.getArena(arenaNum).setMinutes(time);
 
-		data.getArena(arenaNum).Timer = new BukkitRunnable() {
+		data.getLaserTagData(arenaNum).Timer = new BukkitRunnable() {
 
 			@Override
 			public void run() {
@@ -28,13 +28,13 @@ public class Timer {
 				int seconds = data.getArena(arenaNum).getSeconds();
 				int minutes = data.getArena(arenaNum).getMinutes();
 
-				if(data.getArena(arenaNum).getInGameCount() < data.getMinPlayers(arenaName)) {
+				if(data.getArena(arenaNum).getGameCount() < data.getMinPlayers(arenaName)) {
 					stopTimer(arenaName);
 				}
 
 				if(seconds <= 0 && minutes >= 1) {
 
-					data.getArena(arenaNum).setTimeMsg(minutes + " Minutes");
+					data.getLaserTagData(arenaNum).setTimeMsg(minutes + " Minutes");
 					playerList.getPlayer(arenaName, Message.LOBBY);
 
 					data.getArena(arenaNum).setSeconds(60);
@@ -42,7 +42,7 @@ public class Timer {
 
 				} else if (minutes < 1) {
 
-					data.getArena(arenaNum).setTimeMsg(seconds + " Seconds");
+					data.getLaserTagData(arenaNum).setTimeMsg(seconds + " Seconds");
 					playerList.getPlayer(arenaName, Message.LOBBY);
 
 					if(seconds == 0) {
@@ -71,7 +71,7 @@ public class Timer {
 		data.getArena(arenaNum).setSeconds(0);
 		data.getArena(arenaNum).setMinutes(time);
 
-		data.getArena(arenaNum).Timer = new BukkitRunnable() {
+		data.getLaserTagData(arenaNum).Timer = new BukkitRunnable() {
 
 			@Override
 			public void run() {
@@ -81,7 +81,7 @@ public class Timer {
 
 				if(seconds <= 0 && minutes >= 1) {
 
-					data.getArena(arenaNum).setTimeMsg(minutes + " Minutes");
+					data.getLaserTagData(arenaNum).setTimeMsg(minutes + " Minutes");
 					playerList.getPlayer(arenaName, Message.GAME);
 
 					data.getArena(arenaNum).setSeconds(60);
@@ -89,7 +89,7 @@ public class Timer {
 
 				} else if (minutes < 1) {
 
-					data.getArena(arenaNum).setTimeMsg(seconds + " Seconds");
+					data.getLaserTagData(arenaNum).setTimeMsg(seconds + " Seconds");
 					playerList.getPlayer(arenaName, Message.GAME);
 
 					if(seconds == 0) {
@@ -117,8 +117,8 @@ public class Timer {
 
 		int arenaNum = data.getArenaNum(arenaName);
 
-		if(data.getArena(arenaNum).Timer != null) {
-			data.getArena(arenaNum).Timer.cancel();
+		if(data.getLaserTagData(arenaNum).Timer != null) {
+			data.getLaserTagData(arenaNum).Timer.cancel();
 		}
 	}
 

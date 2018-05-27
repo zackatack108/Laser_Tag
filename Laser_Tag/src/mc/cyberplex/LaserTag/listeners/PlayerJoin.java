@@ -6,7 +6,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import mc.cyberplex.LaserTag.Main;
-import mc.cyberplex.LaserTag.arena.ArenaData;
 import mc.cyberplex.LaserTag.kits.enumerations.Colors;
 import mc.cyberplex.LaserTag.kits.enumerations.CoolDownTime;
 import mc.cyberplex.LaserTag.kits.enumerations.GunRanges;
@@ -15,7 +14,6 @@ import mc.cyberplex.LaserTag.kits.enumerations.GunTypes;
 public class PlayerJoin implements Listener{
 
 	Main main = Main.getMain();
-	ArenaData data = new ArenaData();
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {

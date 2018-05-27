@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 import mc.cyberplex.LaserTag.arena.ArenaState;
 import mc.cyberplex.LaserTag.kits.KitListeners;
 import mc.cyberplex.LaserTag.listeners.GunFire;
@@ -29,8 +29,9 @@ public class Main extends JavaPlugin{
 		createConfig();
 		main.saveConfig();
 		
-		ArenaData.rand.setSeed(System.currentTimeMillis());
-		ArenaData.updateArenaList();
+		Arena.rand.setSeed(System.currentTimeMillis());
+		Arena arena = new Arena();
+		arena.setArenaList();
 		
 		//register commands
 		this.getCommand("lt").setExecutor(new Commands());

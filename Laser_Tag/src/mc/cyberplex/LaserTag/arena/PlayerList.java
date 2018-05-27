@@ -12,7 +12,7 @@ import mc.cyberplex.LaserTag.Scoreboards;
 
 public class PlayerList {
 	
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	Main main = Main.getMain();
 	
 	public void getPlayer(String arenaName, Message msg) {
@@ -22,9 +22,9 @@ public class PlayerList {
 		
 		int arenaNum = data.getArenaNum(arenaName);
 		
-		for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
+		for(int count = 0; count < data.getArena(arenaNum).getGameCount(); count++) {
 			
-			UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(count));
+			UUID playerID = data.getArena(arenaNum).getPlayer(count);
 			Player player = Bukkit.getPlayer(playerID);
 			
 			if(msg == Message.LOBBY) {
@@ -43,9 +43,9 @@ public class PlayerList {
 		
 		int arenaNum = data.getArenaNum(arenaName);
 		
-		for(int count = 0; count < data.getArena(arenaNum).getInGameCount(); count++) {
+		for(int count = 0; count < data.getArena(arenaNum).getGameCount(); count++) {
 			
-			UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(count));
+			UUID playerID = data.getArena(arenaNum).getPlayer(count);
 			Player player = Bukkit.getPlayer(playerID);
 			
 			player.sendMessage(ChatColor.YELLOW + killed.getName() + " was killed by " + killer.getName());

@@ -18,7 +18,7 @@ import net.md_5.bungee.api.ChatColor;
 public class ArenaState {
 
 	Main main = Main.getMain();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	PlayerList playerList = new PlayerList();
 	GetKitItems kit = new GetKitItems();
 	JoinSign joinSign = new JoinSign();
@@ -30,11 +30,11 @@ public class ArenaState {
 
 		playerList.getPlayer(arenaName, Message.LOBBY);
 
-		if(data.getArena(arenaNum).getInGameCount() == data.getMinPlayers(arenaName)) {
+		if(data.getArena(arenaNum).getGameCount() == data.getMinPlayers(arenaName)) {
 
 			time.lobbyTime(arenaName, 5);
 
-		} else if(data.getArena(arenaNum).getInGameCount() == data.getMaxPlayers(arenaName)) {
+		} else if(data.getArena(arenaNum).getGameCount() == data.getMaxPlayers(arenaName)) {
 
 			time.stopTimer(arenaName);
 			time.lobbyTime(arenaName, 1);
@@ -56,10 +56,10 @@ public class ArenaState {
 		time.gameTime(arenaName, 30);
 
 		//get each player in the arena and teleport them into the arena
-		for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+		for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 
 			//get the player from the arena
-			UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(index));
+			UUID playerID = data.getArena(arenaNum).getPlayer(index);
 			Player player = Bukkit.getPlayer(playerID);
 
 			player.setGameMode(GameMode.SURVIVAL);
@@ -73,7 +73,7 @@ public class ArenaState {
 			ItemStack gun = new ItemStack(kit.getGunType(player));				
 			player.getInventory().addItem(gun);
 
-			data.getArena(arenaNum).setPlayerScore(index, 0);
+			data.getLaserTagData(arenaNum).setPlayerScore(index, 0);
 
 		}
 
@@ -86,24 +86,24 @@ public class ArenaState {
 
 			//get the arena num
 			int arenaNum = data.getArenaNum(arenaName);
-			int gameCount = data.getArena(arenaNum).getInGameCount();
+			int gameCount = data.getArena(arenaNum).getGameCount();
 			int highScore = 0;
 			Player winner = null;
 
 			for(int index = 0; index < gameCount; index++) {
-				if(data.getArena(arenaNum).getPlayerScore(index) >= data.getArena(arenaNum).getPlayerScore(highScore)) {
+				if(data.getLaserTagData(arenaNum).getPlayerScore(index) >= data.getLaserTagData(arenaNum).getPlayerScore(highScore)) {
 					highScore = index;
-					winner = Bukkit.getPlayer(UUID.fromString(data.getArena(arenaNum).getInGame(index)));
+					winner = Bukkit.getPlayer(data.getArena(arenaNum).getPlayer(index));
 				}
 			}
 
 			for(int index = 0; index < gameCount; index++) {
 
 				//get the player UUID from the in game list
-				UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(index));
+				UUID playerID = data.getArena(arenaNum).getPlayer(index);
 				Player player = Bukkit.getPlayer(playerID);	
 
-				if(data.getArena(arenaNum).getPlayerScore(highScore) == 0) {
+				if(data.getLaserTagData(arenaNum).getPlayerScore(highScore) == 0) {
 					player.sendMessage(ChatColor.BLUE + "Score was tied");
 				} else {
 					player.sendMessage(ChatColor.BLUE + "The winner is: " + ChatColor.GREEN + winner.getName());
@@ -114,7 +114,7 @@ public class ArenaState {
 			for(int index = 0; index < gameCount; index++) {
 
 				//get the player UUID from the in game list
-				UUID playerID = UUID.fromString(data.getArena(arenaNum).getInGame(0));
+				UUID playerID = data.getArena(arenaNum).getPlayer(0);
 				Player player = Bukkit.getPlayer(playerID);				
 
 				player.setGameMode(GameMode.SURVIVAL);
@@ -126,11 +126,9 @@ public class ArenaState {
 
 			}			
 
-			if(data.getArena(arenaNum).getInGameCount() == 0) {
+			if(data.getArena(arenaNum).getGameCount() == 0) {
 				main.getConfig().set("Arenas." + arenaName + ".state", "waiting for players");
 			}
-
-			data.getArena(arenaNum).emptyPlayers();
 
 		}
 

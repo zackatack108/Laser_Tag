@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import mc.cyberplex.LaserTag.Main;
-import mc.cyberplex.LaserTag.arena.ArenaData;
+import mc.cyberplex.LaserTag.arena.Arena;
 import mc.cyberplex.LaserTag.arena.Message;
 import mc.cyberplex.LaserTag.arena.PlayerList;
 import mc.cyberplex.LaserTag.arena.PlayerState;
@@ -17,7 +17,7 @@ import mc.cyberplex.LaserTag.arena.PlayerState;
 public class PlayerLeaveGame implements Listener{
 
 	Main main = Main.getMain();
-	ArenaData data = new ArenaData();
+	Arena data = new Arena();
 	PlayerState playerState = new PlayerState();
 	PlayerList playerList = new PlayerList();
 	PlayerDeath playerDeath = new PlayerDeath();
@@ -38,11 +38,11 @@ public class PlayerLeaveGame implements Listener{
 			arena = arenaName;
 			int arenaNum = data.getArenaNum(arenaName);
 
-			for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+			for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 
-				if(player.getUniqueId().toString().equals(data.getArena(arenaNum).getInGame(index))) {
+				if(player.getUniqueId().equals(data.getArena(arenaNum).getPlayer(index))) {
 
-					tempScore = data.getArena(arenaNum).getPlayerScore(index);
+					tempScore = data.getLaserTagData(arenaNum).getPlayerScore(index);
 					playerState.leaveGame(arenaName, player);
 					inArena = true;
 
@@ -87,10 +87,10 @@ public class PlayerLeaveGame implements Listener{
 				rejoinTime.cancel();
 				data.getArena(arenaNum).addPlayer(player);
 
-				for(int index = 0; index < data.getArena(arenaNum).getInGameCount(); index++) {
+				for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 
-					if(data.getArena(arenaNum).getInGame(index).equals(player.getUniqueId().toString())) {					
-						data.getArena(arenaNum).setPlayerScore(index, tempScore);					
+					if(data.getArena(arenaNum).getPlayer(index).equals(player.getUniqueId())) {					
+						data.getLaserTagData(arenaNum).setPlayerScore(index, tempScore);					
 					}
 
 				}			
