@@ -46,7 +46,7 @@ public class ArenaState {
 	public void start(String arenaName){
 
 		//set the arena state to running
-		main.getConfig().set("Arenas." + arenaName + ".state", "running");
+		data.setState(arenaName, "running");
 		joinSign.updateSign(arenaName);
 
 		int arenaNum = data.getArenaNum(arenaName);
@@ -127,7 +127,7 @@ public class ArenaState {
 			}			
 
 			if(data.getArena(arenaNum).getGameCount() == 0) {
-				main.getConfig().set("Arenas." + arenaName + ".state", "waiting for players");
+				data.setState(arenaName, "waiting for players");
 			}
 
 		}

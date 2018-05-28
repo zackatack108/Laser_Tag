@@ -94,7 +94,7 @@ public class Timer {
 
 					if(seconds == 0) {
 
-						main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
+						data.setState(arenaName, "stopping");
 
 						cancel();
 

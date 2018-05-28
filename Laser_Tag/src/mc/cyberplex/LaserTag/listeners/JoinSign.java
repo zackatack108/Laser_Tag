@@ -101,7 +101,7 @@ public class JoinSign implements Listener{
 
 	public void updateSign(String arenaName) {
 
-		String arenaState = main.getConfig().getString("Arenas." + arenaName + ".state");
+		String arenaState = data.getState(arenaName);
 
 		Location signLocation = data.getJoinSign(arenaName);
 

@@ -45,6 +45,8 @@ public class PlayerDeath implements Listener{
 
 						event.getDrops().clear();
 						player.setHealth(20);
+						player.setFoodLevel(20);
+						player.setFireTicks(0);
 						player.setGameMode(GameMode.SPECTATOR);
 
 						onRespawn(player, arenaName);
@@ -68,11 +70,11 @@ public class PlayerDeath implements Listener{
 			@Override
 			public void run() {
 
-				if(main.getConfig().getString("Arenas." + arenaName + ".state").equalsIgnoreCase("stopping")) {
+				if(data.getState(arenaName).equalsIgnoreCase("stopping")) {
 					this.cancel();
 				} else {	
 
-					if(this.seconds == 0 && main.getConfig().getString("Arenas." + arenaName + ".state").equalsIgnoreCase("running")) {
+					if(this.seconds == 0 && data.getState(arenaName).equalsIgnoreCase("running")) {
 
 						player.setGameMode(GameMode.SURVIVAL);
 						player.getInventory().clear();
@@ -83,11 +85,13 @@ public class PlayerDeath implements Listener{
 						player.getInventory().addItem(gun);
 
 						player.setHealth(20);
+						player.setFoodLevel(20);
+						player.setFireTicks(0);
 						player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
 						this.cancel();
 
-					} else if(main.getConfig().getString("Arenas." + arenaName + ".state").equalsIgnoreCase("waiting for players")) {
+					} else if(data.getState(arenaName).equalsIgnoreCase("waiting for players")) {
 						cancel();
 					}
 

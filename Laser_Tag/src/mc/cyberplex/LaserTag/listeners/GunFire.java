@@ -136,7 +136,7 @@ public class GunFire implements Listener{
 								
 								if(data.getLaserTagData(arenaNum).getPlayerScore(index) >= data.getLaserTagData(arenaNum).getScoreToWin()) {
 									
-									main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
+									data.setState(arenaName, "stopping");
 									state.stop(arenaName);
 									
 								}

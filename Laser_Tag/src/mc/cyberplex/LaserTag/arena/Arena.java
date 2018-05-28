@@ -47,19 +47,28 @@ public class Arena {
 				Set<String> tempArenas = main.getConfig().getConfigurationSection("Arenas").getKeys(false);
 				String [] name = new String[tempArenas.size()];
 				
-				arenaNames = new ArrayList<String>();
-				arenaData = new ArrayList<Arena>();
-				laserTagData = new ArrayList<LaserTagData>();
+				tempArenas.toArray(name);
 
-				for(int i = 0; i < tempArenas.size(); i++) {				
+				for(int i = 0; i < tempArenas.size(); i++) {
+
 					arenaNames.add(name[i]);
 					arenaData.add(new Arena());
 					laserTagData.add(new LaserTagData());
+
 				}
 
 			}
+
 		}
 
+	}
+	
+	public void emptyArenaList() {
+		
+		arenaNames.removeAll(arenaNames);
+		arenaData.removeAll(arenaData);
+		laserTagData.removeAll(laserTagData);
+		
 	}
 
 	//----------------------------------------------
@@ -269,7 +278,7 @@ public class Arena {
 		if(name != null) {
 
 			if(main.getConfig().contains("Arenas." + name)) {
-				
+
 				int arenaNum = getArenaNum(name);
 
 				main.getConfig().set("Arenas." + name, null);
@@ -313,24 +322,24 @@ public class Arena {
 
 				spawnList.add(new SpawnData(world, x, y, z, yaw, pitch));
 			}
-			
+
 			//remove the spawn from the spawn list
 			spawnList.remove(num);
-			
+
 			//nuke all the spawns in the spawnlist to update the spawn numbers
 			main.getConfig().set("Arenas." + arenaName + ".spawn", null);
-			
+
 			//saves all the spawn data back to the config
 			for(int count = 0; count < spawnList.size(); count++) {
-				
+
 				String world = spawnList.get(count).world;
 				double x = spawnList.get(count).x,
 						y = spawnList.get(count).y,
 						z = spawnList.get(count).z,
 						yaw = spawnList.get(count).yaw,
 						pitch = spawnList.get(count).pitch;
-				
-				
+
+
 				//save spawnpoint to config
 				main.getConfig().set("Arenas." + arenaName + ".spawn." + count + ".world", world);
 				main.getConfig().set("Arenas." + arenaName + ".spawn." + count + ".x", x);
@@ -339,7 +348,7 @@ public class Arena {
 				main.getConfig().set("Arenas." + arenaName + ".spawn." + count + ".yaw", yaw);
 				main.getConfig().set("Arenas." + arenaName + ".spawn." + count + ".pitch", pitch);
 				main.saveConfig();
-				
+
 			}
 
 		}
@@ -404,18 +413,18 @@ public class Arena {
 
 		return arenaData.get(index);
 	}
-	
+
 	public LaserTagData getLaserTagData(int index) {
-		
+
 		if(index < 0 || index > arenaNames.size()) {
 			return null;
 		}
 		if(laserTagData.size() <= index) {
 			laserTagData.add(index, new LaserTagData());
 		}
-		
+
 		return laserTagData.get(index);
-		
+
 	}
 
 	public int getArenaNum(String arenaName) {
@@ -571,13 +580,13 @@ public class Arena {
 	}
 
 	public String getState(String arenaName) {
-		
-		if(arenaName != null && main.getConfig().contains(arenaName)) {
+
+		if(arenaName != null && main.getConfig().contains("Arenas." + arenaName)) {
 			return main.getConfig().getString("Arenas." + arenaName + ".state");			
 		} else {
 			return null;
 		}
-		
+
 	}
 	//------------------------------------
 	//Inventory methods to save and return

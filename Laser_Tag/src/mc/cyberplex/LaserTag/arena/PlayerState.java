@@ -19,7 +19,7 @@ public class PlayerState {
 
 	public void joinGame(Player player, String arenaName) {
 
-		state = main.getConfig().getString("Arenas." + arenaName + ".state");
+		state = data.getState(arenaName);
 
 		if(main.getConfig().getString("Arenas." + arenaName + ".lobby.world") == null) { //check to see if a lobby exist for the arena
 			player.sendMessage(ChatColor.RED + "Sorry, a lobby doesn't exist for the arena");
@@ -45,7 +45,7 @@ public class PlayerState {
 
 	public void leaveGame(String arenaName, Player player){
 		
-		state = main.getConfig().getString("Arenas." + arenaName + ".state");		
+		state = data.getState(arenaName);		
 		int arenaNum = data.getArenaNum(arenaName);
 		
 		if(state.equalsIgnoreCase("running")){
@@ -53,7 +53,7 @@ public class PlayerState {
 			//checks to see if the total players is less then the minimum for arena
 			if(data.getArena(arenaNum).getGameCount()-1 < data.getMinPlayers(arenaName)){
 				
-				main.getConfig().set("Arenas." + arenaName + ".state", "stopping");
+				data.setState(arenaName, "stopping");
 				
 				//stops the arena
 				ArenaState arenaState = new ArenaState();				

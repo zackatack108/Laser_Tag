@@ -488,11 +488,20 @@ public class Commands implements CommandExecutor{
 				if(player.hasPermission("lt.reload")) {
 
 					if(args.length == 1) {
+						
+						ArenaState state = new ArenaState();
+						
+						for(String arenaName: main.getConfig().getConfigurationSection("Arenas").getKeys(false)){
+							
+							state.stop(arenaName);
+							
+						}
 
 						//reload config
 						main.reloadConfig();
 						main.saveConfig();
 						
+						data.emptyArenaList();
 						data.setArenaList();
 						
 						//display message to player saying config was reloaded

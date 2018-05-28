@@ -80,7 +80,7 @@ public class PlayerLeaveGame implements Listener{
 		Player player = event.getPlayer();
 
 		if(arena != null) {
-			if(main.getConfig().getString("Arenas." + arena + ".state").equalsIgnoreCase("running") && inArena == true) {
+			if(data.getState(arena).equalsIgnoreCase("running") && inArena == true) {
 
 				int arenaNum = data.getArenaNum(arena);
 
