@@ -43,7 +43,7 @@ public class Scoreboards {
 		//set up the time 
 		time.addEntry(ChatColor.GREEN.toString());
 		time.setPrefix(ChatColor.GREEN + "Time: ");
-		time.setSuffix(ChatColor.WHITE + data.getLaserTagData(arenaNum).getTimeMsg());
+		time.setSuffix(ChatColor.WHITE + addPadding(2, Integer.toString(data.getArena(arenaNum).getMinutes())) + ":" + addPadding(2,Integer.toString(data.getArena(arenaNum).getSeconds())));
 
 		Score arena = lobbyObjective.getScore(ChatColor.YELLOW + "Arena: " + ChatColor.WHITE + arenaName.substring(0, 1).toUpperCase() + arenaName.substring(1));
 		Score blank = lobbyObjective.getScore("  ");
@@ -68,7 +68,7 @@ public class Scoreboards {
 
 		time.addEntry(ChatColor.GREEN.toString());
 		time.setPrefix(ChatColor.GREEN + "Time: ");
-		time.setSuffix(ChatColor.WHITE + data.getLaserTagData(arenaNum).getTimeMsg());
+		time.setSuffix(ChatColor.WHITE + addPadding(2, Integer.toString(data.getArena(arenaNum).getMinutes())) + ":" + addPadding(2,Integer.toString(data.getArena(arenaNum).getSeconds())));
 
 		Score arena = gameObjective.getScore(ChatColor.YELLOW + "Arena: " + ChatColor.WHITE + arenaName.substring(0,1).toUpperCase() + arenaName.substring(1));
 		Score blank1 = gameObjective.getScore("  ");
@@ -101,4 +101,16 @@ public class Scoreboards {
 
 	}
 
+	public String addPadding(int length, String text) {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(int i = length - text.length(); i > 0; i--) {
+			sb.append('0');
+		}
+		
+		sb.append(text);
+		return sb.toString();		
+	}
+	
 }

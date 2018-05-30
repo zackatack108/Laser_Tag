@@ -53,7 +53,7 @@ public class ArenaState {
 
 		time.stopTimer(arenaName);
 		
-		time.gameTime(arenaName, 30);
+		time.gameTime(arenaName, 20);
 
 		//get each player in the arena and teleport them into the arena
 		for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
