@@ -11,8 +11,6 @@ public class LaserTagData {
 	private final int MAX = 50;
 	public BukkitTask Timer = null;
 	private int playerScores[] = new int[MAX], scoreToWin = 25;
-	
-	private String timeMsg = " ";
 
 	//--------------------
 	//setters for class
@@ -23,10 +21,6 @@ public class LaserTagData {
 			playerScores[index] = score;	
 		}
 
-	}
-	
-	public void setTimeMsg(String msg) {
-		timeMsg = msg;
 	}
 
 	//---------------------------------------------------
@@ -39,9 +33,4 @@ public class LaserTagData {
 	public int getScoreToWin() {
 		return scoreToWin;		
 	}
-	
-	public String getTimeMsg()	{
-		return timeMsg;
-	}
-
 }
