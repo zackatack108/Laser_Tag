@@ -100,7 +100,9 @@ public class PlayerLeaveGame implements Listener{
 
 			} else {
 
-				rejoinTime.cancel();
+				if(rejoinTime != null) {
+					rejoinTime.cancel();
+				}
 
 			}
 

@@ -1,5 +1,5 @@
 name: Laser_Tag
-version: 2.5
+version: 2.6
 main: mc.cyberplex.LaserTag.Main
 commands:
   lt:
