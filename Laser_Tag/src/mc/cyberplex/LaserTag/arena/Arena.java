@@ -70,6 +70,13 @@ public class Arena {
 		laserTagData.removeAll(laserTagData);
 		
 	}
+	
+	public void emptyArenaData(int index) {
+		
+		arenaData.set(index, new Arena());
+		laserTagData.set(index, new LaserTagData());
+		
+	}
 
 	//----------------------------------------------
 	//Class adders will add players, arena and spawn
