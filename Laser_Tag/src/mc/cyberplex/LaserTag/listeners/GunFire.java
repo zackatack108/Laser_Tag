@@ -63,7 +63,11 @@ public class GunFire implements Listener{
 				}
 			}
 
-			ItemStack gunType = new ItemStack(kit.getGunType(player, arenaNum));
+			ItemStack gunType = null;
+			
+			if(inArena == true) {
+				gunType = new ItemStack(kit.getGunType(player, arenaNum));
+			}
 
 			if(player.getInventory().getItemInMainHand().equals(gunType) && inArena == true) {
 
