@@ -63,6 +63,7 @@ public class ArenaState {
 			Player player = Bukkit.getPlayer(playerID);
 
 			player.setGameMode(GameMode.SURVIVAL);
+			data.getLaserTagData(arenaNum).setPlayerKit(player);
 
 			//teleport the player to the arena to a random spawn point				
 			Location spawn = data.getSpawn(arenaName);
@@ -70,7 +71,7 @@ public class ArenaState {
 			playerList.getPlayer(arenaName, Message.GAME);
 
 			//get the gun type that the player has and give it to them
-			ItemStack gun = new ItemStack(kit.getGunType(player));				
+			ItemStack gun = new ItemStack(kit.getGunType(player, arenaNum));				
 			player.getInventory().addItem(gun);
 
 			data.getLaserTagData(arenaNum).setPlayerScore(index, 0);
@@ -124,7 +125,9 @@ public class ArenaState {
 				PlayerState playerState = new PlayerState();
 				playerState.leaveGame(arenaName, player);
 
-			}			
+			}
+			
+			data.emptyArenaData(arenaNum);
 
 			if(data.getArena(arenaNum).getGameCount() == 0) {
 				data.setState(arenaName, "waiting for players");

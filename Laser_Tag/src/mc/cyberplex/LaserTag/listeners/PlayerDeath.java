@@ -79,9 +79,11 @@ public class PlayerDeath implements Listener{
 						player.setGameMode(GameMode.SURVIVAL);
 						player.getInventory().clear();
 						player.teleport(data.getSpawn(arenaName));
+						
+						int arenaNum = data.getArenaNum(arenaName);
 
 						//get the gun type that the player has and give it to them
-						ItemStack gun = new ItemStack(kit.getGunType(player));				
+						ItemStack gun = new ItemStack(kit.getGunType(player, arenaNum));				
 						player.getInventory().addItem(gun);
 
 						player.setHealth(20);

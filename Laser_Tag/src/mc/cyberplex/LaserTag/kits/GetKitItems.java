@@ -10,32 +10,34 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import mc.cyberplex.LaserTag.Main;
+import mc.cyberplex.LaserTag.arena.Arena;
 
 public class GetKitItems {
 
 	//get the main class
 	Main main = Main.getMain();
+	Arena data = new Arena();
 
 	//create variables for red, green, and blue colors
 	private float red;
 	private float green;
 	private float blue;
-	
+
 	//get kit items constructor
 	public GetKitItems(){
-		
+
 		//Initialize variables 
 		red = 0.1F;
 		green = 0.1F;
 		blue = 0.1F;
-		
+
 	}
 
 	//get the laser color from the config for the player
-	public void getLaserColor(Player player, float x, float y, float z) {
+	public void getLaserColor(Player player, float x, float y, float z, int arenaNum) {
 
 		//create a variable laser color and initialize it to the value from the config
-		String laserColor = main.getConfig().getString("Players." + player.getUniqueId().toString() + ".laser color");
+		String laserColor = data.getLaserTagData(arenaNum).getLaserColor(player);
 
 		//check to see what the color is and set red, green, and blue values to display the color
 		switch (laserColor) {
@@ -83,7 +85,7 @@ public class GetKitItems {
 
 			break;			
 		case "VIOLET":
-			
+
 			red = 75;
 			green = 0.1F;
 			blue = 130;			
@@ -113,10 +115,10 @@ public class GetKitItems {
 	}
 
 	//get the firework color from the config for the player
-	public void getFireworkColor(Firework fw, Player player, Location point) {
+	public void getFireworkColor(Firework fw, Player player, Location point, int arenaNum) {
 
 		//create variable for firework color and initialize it to the color from the config for the user
-		String fireworkColor = main.getConfig().getString("Players." + player.getUniqueId().toString() + ".firework color");
+		String fireworkColor = data.getLaserTagData(arenaNum).getFireworkColor(player);
 
 		//create firework meta to show the color
 		FireworkMeta meta = fw.getFireworkMeta();
@@ -126,7 +128,7 @@ public class GetKitItems {
 		switch (fireworkColor)
 		{
 		case "BLUE":
-			
+
 			builder.withFlicker().withColor(Color.BLUE).with(FireworkEffect.Type.BALL);			
 
 			break;
@@ -136,27 +138,27 @@ public class GetKitItems {
 
 			break;
 		case "INDIGO":		
-			
+
 			builder.withFlicker().withColor(Color.NAVY).with(FireworkEffect.Type.BALL);
 
 			break;
 		case "ORANGE": 
-			
+
 			builder.withFlicker().withColor(Color.ORANGE).with(FireworkEffect.Type.BALL);			
 
 			break;
 		case "PINK": 
-			
+
 			builder.withFlicker().withColor(Color.FUCHSIA).with(FireworkEffect.Type.BALL);			
 
 			break;
 		case "RAINBOW": 
-			
+
 			builder.withFlicker().withColor(new Color[] { Color.RED, Color.ORANGE, Color.GREEN, Color.BLUE, Color.PURPLE }).with(FireworkEffect.Type.BALL);
 
 			break;
 		case "RED": 
-			
+
 			builder.withFlicker().withColor(Color.RED).with(FireworkEffect.Type.BALL);
 
 			break;
@@ -184,10 +186,10 @@ public class GetKitItems {
 	}
 
 	//get the gun type from the config for the player
-	public Material getGunType(Player player) {
+	public Material getGunType(Player player, int arenaNum) {
 
 		//create variable for gun type and initialize it to config value for the user 
-		String gunType = main.getConfig().getString("Players." + player.getUniqueId().toString() + ".gun type");
+		String gunType = data.getLaserTagData(arenaNum).getGunType(player);
 
 		//check to see what the gun type is and return the material value
 		switch (gunType) {
@@ -221,10 +223,10 @@ public class GetKitItems {
 	}
 
 	//get the gun range from the config for the player
-	public int getGunRange(Player player) {
+	public int getGunRange(Player player, int arenaNum) {
 
 		//create variable for gun range and initialize it to value from the config for the user
-		String gunRange = main.getConfig().getString("Players." + player.getUniqueId().toString() + ".gun range");
+		String gunRange = data.getLaserTagData(arenaNum).getGunRange(player);
 
 		//check to see what the gun range is and return the range value
 		switch (gunRange) {
@@ -258,10 +260,10 @@ public class GetKitItems {
 	}
 
 	//get the reload time from the config for the player
-	public int getReloadTime(Player player) {
+	public int getReloadTime(Player player, int arenaNum) {
 
 		//create variable for reload time and initilize it to the value from the config for the user
-		String reloadTime = main.getConfig().getString("Players." + player.getUniqueId().toString() + ".reload time");
+		String reloadTime = data.getLaserTagData(arenaNum).getReloadTime(player);
 
 		//check to see what the reload time is and return the reload value
 		switch (reloadTime) {

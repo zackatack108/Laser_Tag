@@ -63,13 +63,13 @@ public class GunFire implements Listener{
 				}
 			}
 
-			ItemStack gunType = new ItemStack(kit.getGunType(player));
+			ItemStack gunType = new ItemStack(kit.getGunType(player, arenaNum));
 
 			if(player.getInventory().getItemInMainHand().equals(gunType) && inArena == true) {
 
 				Location start = player.getEyeLocation();
 				Vector increase = start.getDirection();
-				Player otherPlayer = getNearestEntityInSight(player, kit.getGunRange(player));
+				Player otherPlayer = getNearestEntityInSight(player, kit.getGunRange(player, arenaNum));
 
 				if(otherPlayer!=null) {					
 					this.otherPlayerLoc = otherPlayer.getLocation();					
@@ -77,7 +77,7 @@ public class GunFire implements Listener{
 
 				start.setY(start.getY() - 0.2D);
 
-				int coolDownTime = this.kit.getReloadTime(player);
+				int coolDownTime = this.kit.getReloadTime(player, arenaNum);
 
 				if(coolDowns.containsKey(player.getName())) {
 
@@ -96,7 +96,7 @@ public class GunFire implements Listener{
 				coolDowns.put(player.getName(), Long.valueOf(System.currentTimeMillis()));
 				reloadMsg(player, coolDownTime);
 
-				for(int range = 0; range <= kit.getGunRange(player); range++) {
+				for(int range = 0; range <= kit.getGunRange(player, arenaNum); range++) {
 
 					Location point = start.add(increase);
 
@@ -104,7 +104,7 @@ public class GunFire implements Listener{
 					float y = (float) point.getY();
 					float z = (float) point.getZ();
 
-					kit.getLaserColor(player, x, y, z);
+					kit.getLaserColor(player, x, y, z, arenaNum);
 					player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_LAUNCH, 1, 2);
 
 					if ((otherPlayer != null) && 
@@ -114,7 +114,7 @@ public class GunFire implements Listener{
 					{
 						
 						final Firework fw = (Firework)point.getWorld().spawnEntity(point, EntityType.FIREWORK);
-						kit.getFireworkColor(fw, player, point);
+						kit.getFireworkColor(fw, player, point, arenaNum);
 						otherPlayer.setHealth(0.0D);
 						playerList.deathMessage(arenaName, otherPlayer, player);
 						
