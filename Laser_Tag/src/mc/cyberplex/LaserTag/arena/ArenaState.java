@@ -119,13 +119,12 @@ public class ArenaState {
 				UUID playerID = data.getArena(arenaNum).getPlayer(0);
 				Player player = Bukkit.getPlayer(playerID);				
 
-				player.setGameMode(GameMode.SURVIVAL);
+				PlayerState playerState = new PlayerState();
+				playerState.leaveGame(arenaName, player);
+				
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
 				player.setHealth(20);
 				player.setFireTicks(0);
-
-				PlayerState playerState = new PlayerState();
-				playerState.leaveGame(arenaName, player);
 
 			}
 			
