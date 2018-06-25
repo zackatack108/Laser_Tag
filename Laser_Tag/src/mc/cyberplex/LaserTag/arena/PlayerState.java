@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import mc.cyberplex.LaserTag.Main;
+import mc.cyberplex.LaserTag.Scoreboards;
 import mc.cyberplex.LaserTag.Timer;
 import mc.cyberplex.LaserTag.listeners.JoinSign;
 import net.md_5.bungee.api.ChatColor;
@@ -34,6 +35,8 @@ public class PlayerState {
 			Arena.saveInventory(player);
 			player.teleport(data.getLobby(arenaName));
 			data.getArena(arenaNum).addPlayer(player);
+			Scoreboards board = new Scoreboards();
+			board.lobbyBoard(arenaNum, player, arenaName);
 			ArenaState arenaState = new ArenaState();
 			arenaState.waiting(arenaName);
 			joinSign.updateSign(arenaName);

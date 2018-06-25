@@ -8,8 +8,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-
 import mc.cyberplex.LaserTag.Main;
+import mc.cyberplex.LaserTag.Scoreboards;
 import mc.cyberplex.LaserTag.Timer;
 import mc.cyberplex.LaserTag.kits.GetKitItems;
 import mc.cyberplex.LaserTag.listeners.JoinSign;
@@ -61,14 +61,15 @@ public class ArenaState {
 			//get the player from the arena
 			UUID playerID = data.getArena(arenaNum).getPlayer(index);
 			Player player = Bukkit.getPlayer(playerID);
-
-			player.setGameMode(GameMode.SURVIVAL);
+			
 			data.getLaserTagData(arenaNum).setPlayerKit(player);
 
 			//teleport the player to the arena to a random spawn point				
 			Location spawn = data.getSpawn(arenaName);
 			player.teleport(spawn);
-			playerList.getPlayer(arenaName, Message.GAME);
+			
+			Scoreboards board = new Scoreboards();
+			board.gameBoard(arenaNum, player, arenaName);
 
 			//get the gun type that the player has and give it to them
 			ItemStack gun = new ItemStack(kit.getGunType(player, arenaNum));				
@@ -121,6 +122,7 @@ public class ArenaState {
 				player.setGameMode(GameMode.SURVIVAL);
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
 				player.setHealth(20);
+				player.setFireTicks(0);
 
 				PlayerState playerState = new PlayerState();
 				playerState.leaveGame(arenaName, player);
