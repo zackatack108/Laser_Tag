@@ -23,13 +23,13 @@ public class Scoreboards {
 	Arena data = new Arena();
 
 	public void lobbyBoard(int arenaNum, Player player, String arenaName) {
-		
+
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		Scoreboard board = manager.getNewScoreboard();
-		
+
 		Team time = board.registerNewTeam("Time");
 		Team playerCount = board.registerNewTeam("Player Count");
-		
+
 		Objective lobbyObjective = board.registerNewObjective("Lobby", "dummy");
 
 		lobbyObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -62,13 +62,13 @@ public class Scoreboards {
 	}
 
 	public void gameBoard(int arenaNum, Player player, String arenaName) {
-		
+
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		Scoreboard board = manager.getNewScoreboard();
-		
+
 		Team time = board.registerNewTeam("Time");		
 		Objective gameObjective = board.registerNewObjective("Game", "dummy");
-		
+
 		gameObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		gameObjective.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Laser Tag");	
 
@@ -88,14 +88,14 @@ public class Scoreboards {
 			UUID playerID = data.getArena(arenaNum).getPlayer(index);
 			String playerName = Bukkit.getPlayer(playerID).getName();
 			int playerScore = data.getLaserTagData(arenaNum).getPlayerScore(index);
-			
+
 			Team playerTeam = board.registerNewTeam("player" + Integer.toString(index));			
 			playerTeam.addEntry(ChatColor.BLUE + playerName + ": ");
 			playerTeam.setSuffix(ChatColor.WHITE + Integer.toString(playerScore));
-			
+
 			Score score = gameObjective.getScore(ChatColor.BLUE + playerName + ": ");
 			score.setScore(scoreCount);
-			
+
 			scoreCount++;
 
 		}
@@ -124,27 +124,45 @@ public class Scoreboards {
 
 	public void updateLobby(int arenaNum, Player player, String arenaName) {
 
-		Scoreboard board = player.getScoreboard();
-		
-		board.getTeam("Player Count").setSuffix(ChatColor.WHITE + Integer.toString(data.getArena(arenaNum).getGameCount()));
-		
-		board.getTeam("Time").setSuffix(ChatColor.WHITE + addPadding(2, Integer.toString(data.getArena(arenaNum).getMinutes())) + ":" + addPadding(2,Integer.toString(data.getArena(arenaNum).getSeconds())));
+		if(player != null) {
+			Scoreboard board = player.getScoreboard();
 
+			if(board.getObjective(DisplaySlot.SIDEBAR) != null && board.getObjective(DisplaySlot.SIDEBAR).getDisplayName().equals(ChatColor.GOLD + "" + ChatColor.BOLD + "Laser Tag")) {
+
+				board.getTeam("Player Count").setSuffix(ChatColor.WHITE + Integer.toString(data.getArena(arenaNum).getGameCount()));
+				board.getTeam("Time").setSuffix(ChatColor.WHITE + addPadding(2, Integer.toString(data.getArena(arenaNum).getMinutes())) + ":" + addPadding(2,Integer.toString(data.getArena(arenaNum).getSeconds())));
+
+			} else {
+
+				lobbyBoard(arenaNum, player, arenaName);
+
+			}
+		}
 	}
 
 	public void updateGame(int arenaNum, Player player, String arenaName) {
 
-		Scoreboard board = player.getScoreboard();
-		
-		board.getTeam("Time").setSuffix(ChatColor.WHITE + addPadding(2, Integer.toString(data.getArena(arenaNum).getMinutes())) + ":" + addPadding(2,Integer.toString(data.getArena(arenaNum).getSeconds())));
-		
-		for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
-			
-			int playerScore = data.getLaserTagData(arenaNum).getPlayerScore(index);
-			
-			board.getTeam("player" + Integer.toString(index)).setSuffix(ChatColor.WHITE + Integer.toString(playerScore));
-			
+		if(player != null) {
+			Scoreboard board = player.getScoreboard();
+
+			if(board.getObjective(DisplaySlot.SIDEBAR) != null && board.getObjective(DisplaySlot.SIDEBAR).getDisplayName().equals(ChatColor.GOLD + "" + ChatColor.BOLD + "Laser Tag")) {
+
+				board.getTeam("Time").setSuffix(ChatColor.WHITE + addPadding(2, Integer.toString(data.getArena(arenaNum).getMinutes())) + ":" + addPadding(2,Integer.toString(data.getArena(arenaNum).getSeconds())));
+
+				for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
+
+					int playerScore = data.getLaserTagData(arenaNum).getPlayerScore(index);
+
+					board.getTeam("player" + Integer.toString(index)).setSuffix(ChatColor.WHITE + Integer.toString(playerScore));
+
+				}
+
+			} else {
+
+				gameBoard(arenaNum, player, arenaName);
+
+			}
 		}
-		
 	}
+	
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -111,7 +112,7 @@ public class GunFire implements Listener{
 					kit.getLaserColor(player, x, y, z, arenaNum);
 					player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_LAUNCH, 1, 2);
 
-					if ((otherPlayer != null) && 
+					if ((otherPlayer != null) && otherPlayer.getGameMode().equals(GameMode.SURVIVAL) &&
 							(Math.round(point.getX()) == Math.round(this.otherPlayerLoc.getX())) && 
 							(Math.round(point.getY()) == Math.round(this.otherPlayerLoc.getY() + 1.0D)) && 
 							(Math.round(point.getZ()) == Math.round(this.otherPlayerLoc.getZ())))

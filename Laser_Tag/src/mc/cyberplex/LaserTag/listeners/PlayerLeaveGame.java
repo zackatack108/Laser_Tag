@@ -24,10 +24,6 @@ public class PlayerLeaveGame implements Listener{
 
 	BukkitTask rejoinTime;
 
-	int tempScore;
-	String arena;
-	boolean inArena = false;
-
 	@EventHandler
 	public void onPlayerQuitMinecraft(PlayerQuitEvent event) {
 
@@ -35,16 +31,11 @@ public class PlayerLeaveGame implements Listener{
 
 		for(String arenaName : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
 
-			arena = arenaName;
 			int arenaNum = data.getArenaNum(arenaName);
 
 			for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 
 				if(player.getUniqueId().equals(data.getArena(arenaNum).getPlayer(index))) {
-
-					tempScore = data.getLaserTagData(arenaNum).getPlayerScore(index);
-					playerState.leaveGame(arenaName, player);
-					inArena = true;
 
 					rejoinTime = new BukkitRunnable() {
 
@@ -55,7 +46,7 @@ public class PlayerLeaveGame implements Listener{
 
 							if(seconds == 0) {
 
-								inArena = false;
+								playerState.leaveGame(arenaName, player);
 								cancel();							
 
 							}
@@ -78,36 +69,40 @@ public class PlayerLeaveGame implements Listener{
 	public void onPlayerJoinMinecraft(PlayerJoinEvent event) {
 
 		Player player = event.getPlayer();
+		boolean inArena = false;
+		String arena = null;
 
-		if(arena != null) {
-			if(data.getState(arena).equalsIgnoreCase("running") && inArena == true) {
+		for(String arenaName : main.getConfig().getConfigurationSection("Arenas").getKeys(false)) {
 
-				int arenaNum = data.getArenaNum(arena);
+			
+			int arenaNum = data.getArenaNum(arenaName);
 
-				rejoinTime.cancel();
-				data.getArena(arenaNum).addPlayer(player);
+			for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
 
-				for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
-
-					if(data.getArena(arenaNum).getPlayer(index).equals(player.getUniqueId())) {					
-						data.getLaserTagData(arenaNum).setPlayerScore(index, tempScore);					
-					}
-
-				}			
-
-				playerList.getPlayer(arena, Message.GAME);
-				player.setHealth(0);
-
-			} else {
-
-				if(rejoinTime != null) {
-					rejoinTime.cancel();
+				if(player.getUniqueId().equals(data.getArena(arenaNum).getPlayer(index))) {					
+					inArena = true;
+					arena = arenaName;
 				}
 
 			}
 
 		}
-		
+
+		if(inArena == true && data.getState(arena).equalsIgnoreCase("running")) {
+
+			rejoinTime.cancel();			
+
+			playerList.getPlayer(arena, Message.GAME);
+			player.setHealth(0);
+
+		} else {
+
+			if(rejoinTime != null) {
+				rejoinTime.cancel();
+			}
+
+		}
+
 	}
 
 }

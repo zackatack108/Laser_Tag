@@ -26,6 +26,8 @@ public class PlayerState {
 			player.sendMessage(ChatColor.RED + "Sorry, a lobby doesn't exist for the arena");
 		} else if(state.equals("running")) { //check to see if the arena is currently running
 			player.sendMessage(ChatColor.RED + "Sorry, the arena is currently running");
+		} else if(data.getArena(data.getArenaNum(arenaName)).getGameCount() == data.getMaxPlayers(arenaName)) {
+			player.sendMessage(ChatColor.RED + "Sorry, the arena is full");
 		} else {
 
 			//--------------------------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ public class PlayerState {
 			
 		} else if(state.equalsIgnoreCase("waiting for players")) {
 			
-			if(data.getArena(arenaNum).getGameCount()-1 <= data.getMinPlayers(arenaName)){
+			if(data.getArena(arenaNum).getGameCount()-1 < data.getMinPlayers(arenaName)){
 				
 				Timer time = new Timer();
 				time.stopTimer(arenaName);

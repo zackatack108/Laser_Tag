@@ -89,6 +89,7 @@ public class PlayerDeath implements Listener{
 						player.setHealth(20);
 						player.setFoodLevel(20);
 						player.setFireTicks(0);
+						player.setFallDistance(0);
 						player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
 						this.cancel();

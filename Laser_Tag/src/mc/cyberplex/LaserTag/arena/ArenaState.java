@@ -31,7 +31,7 @@ public class ArenaState {
 		playerList.getPlayer(arenaName, Message.LOBBY);
 
 		if(data.getArena(arenaNum).getGameCount() == data.getMinPlayers(arenaName)) {
-
+			
 			time.lobbyTime(arenaName, 5);
 
 		} else if(data.getArena(arenaNum).getGameCount() == data.getMaxPlayers(arenaName)) {
@@ -52,8 +52,6 @@ public class ArenaState {
 		int arenaNum = data.getArenaNum(arenaName);
 
 		time.stopTimer(arenaName);
-		
-		time.gameTime(arenaName, 20);
 
 		//get each player in the arena and teleport them into the arena
 		for(int index = 0; index < data.getArena(arenaNum).getGameCount(); index++) {
@@ -78,6 +76,8 @@ public class ArenaState {
 			data.getLaserTagData(arenaNum).setPlayerScore(index, 0);
 
 		}
+		
+		time.gameTime(arenaName, 20);
 
 	}
 
@@ -122,6 +122,7 @@ public class ArenaState {
 				PlayerState playerState = new PlayerState();
 				playerState.leaveGame(arenaName, player);
 				
+				player.setGameMode(GameMode.SURVIVAL);
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
 				player.setHealth(20);
 				player.setFireTicks(0);
