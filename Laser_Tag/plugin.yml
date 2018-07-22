@@ -1,6 +1,7 @@
 name: Laser_Tag
-version: 3.0
+version: 3.1
 main: mc.cyberplex.LaserTag.Main
+api-version: 1.13
 commands:
   lt:
     description: Laser tag base command.

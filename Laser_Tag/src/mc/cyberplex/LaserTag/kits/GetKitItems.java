@@ -18,23 +18,10 @@ public class GetKitItems {
 	Main main = Main.getMain();
 	Arena data = new Arena();
 
-	//create variables for red, green, and blue colors
-	private float red;
-	private float green;
-	private float blue;
-
-	//get kit items constructor
-	public GetKitItems(){
-
-		//Initialize variables 
-		red = 0.1F;
-		green = 0.1F;
-		blue = 0.1F;
-
-	}
-
 	//get the laser color from the config for the player
-	public void getLaserColor(Player player, float x, float y, float z, int arenaNum) {
+	public void getLaserColor(Player player, Location loc, int arenaNum) {
+		
+		//Player player, float x, float y, float z, int arenaNum
 
 		//create a variable laser color and initialize it to the value from the config
 		String laserColor = data.getLaserTagData(arenaNum).getLaserColor(player);
@@ -42,75 +29,40 @@ public class GetKitItems {
 		//check to see what the color is and set red, green, and blue values to display the color
 		switch (laserColor) {
 
-		case "RED":
-
-			red = 255;
-			green = 0.1F;
-			blue = 0.1F;
-
+		case "RED":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.RED, 1));
 			break;			
-		case "ORANGE":
-
-			red = 255;
-			green = 165;
-			blue = 0.1F;
-
+		case "ORANGE":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.ORANGE, 1));
 			break;			
-		case "YELLOW":
-
-			red = 255;
-			green = 255;
-			blue = 0.1F;
-
+		case "YELLOW":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.YELLOW, 1));
 			break;			
-		case "GREEN":
-
-			red = 0.1F;
-			green = 128;
-			blue = 0.1F;
-
+		case "GREEN":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.LIME, 1));
 			break;			
-		case "BLUE":
-
-			red = 0.1F;
-			green = 0.1F;
-			blue = 255;
-
+		case "BLUE":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.BLUE, 1));
 			break;			
-		case "INDIGO":
-
-			red = 238;
-			green = 130;
-			blue = 238;
-
+		case "INDIGO":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.NAVY, 1));
 			break;			
-		case "VIOLET":
-
-			red = 75;
-			green = 0.1F;
-			blue = 130;			
-
+		case "VIOLET":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.PURPLE, 1));
 			break;			
-		case "PINK":
-
-			red = 255;
-			green = 192;
-			blue = 203;
-
+		case "PINK":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.FUCHSIA, 1));
 			break;			
-		case "RAINBOW":
-
-			red = 127.5F;
-			green =127.5F;
-			blue = 127.5F;
-
-			player.getWorld().spawnParticle(Particle.REDSTONE, x, y, z, 0, red, green, blue, 1); //spawn rainbow particle
-
+		case "RAINBOW":			
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.RED, 1));
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.ORANGE, 1));
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.YELLOW, 1));
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.LIME, 1));
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.BLUE, 1));
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.NAVY, 1));
+			player.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.PURPLE, 1));
 			return;	
 		}
-
-		//spawn colored particle based off of red, green, and blue color
-		player.getWorld().spawnParticle(Particle.REDSTONE, x, y, z, 0, red/255D, green/255D, blue/255D, 1);
 
 	}
 
@@ -121,63 +73,43 @@ public class GetKitItems {
 		String fireworkColor = data.getLaserTagData(arenaNum).getFireworkColor(player);
 
 		//create firework meta to show the color
-		FireworkMeta meta = fw.getFireworkMeta();
-		FireworkEffect.Builder builder = FireworkEffect.builder();
+		FireworkMeta meta = fw.getFireworkMeta();;
+		FireworkEffect.Builder builder = FireworkEffect.builder();;
 
 		//see what the color of the firework is and set the builder to the color for the firework
 		switch (fireworkColor)
 		{
-		case "BLUE":
-
-			builder.withFlicker().withColor(Color.BLUE).with(FireworkEffect.Type.BALL);			
-
+		case "BLUE":			
+			builder.withFlicker().withColor(Color.BLUE).with(FireworkEffect.Type.BALL);
 			break;
-		case "GREEN": 
-
-			builder.withFlicker().withColor(Color.GREEN).with(FireworkEffect.Type.BALL);
-
+		case "GREEN":
+			builder.withFlicker().withColor(Color.LIME).with(FireworkEffect.Type.BALL);
 			break;
-		case "INDIGO":		
-
+		case "INDIGO":
 			builder.withFlicker().withColor(Color.NAVY).with(FireworkEffect.Type.BALL);
-
 			break;
-		case "ORANGE": 
-
-			builder.withFlicker().withColor(Color.ORANGE).with(FireworkEffect.Type.BALL);			
-
+		case "ORANGE":
+			builder.withFlicker().withColor(Color.ORANGE).with(FireworkEffect.Type.BALL);
 			break;
-		case "PINK": 
-
-			builder.withFlicker().withColor(Color.FUCHSIA).with(FireworkEffect.Type.BALL);			
-
+		case "PINK":
+			builder.withFlicker().withColor(Color.FUCHSIA).with(FireworkEffect.Type.BALL);
 			break;
-		case "RAINBOW": 
-
-			builder.withFlicker().withColor(new Color[] { Color.RED, Color.ORANGE, Color.GREEN, Color.BLUE, Color.PURPLE }).with(FireworkEffect.Type.BALL);
-
+		case "RAINBOW":
+			builder.withFlicker().withColor(new Color[] { Color.RED, Color.ORANGE,Color.YELLOW, Color.LIME, Color.BLUE, Color.NAVY, Color.PURPLE }).with(FireworkEffect.Type.BALL);
 			break;
-		case "RED": 
-
+		case "RED":
 			builder.withFlicker().withColor(Color.RED).with(FireworkEffect.Type.BALL);
-
 			break;
-		case "VIOLET": 
-
+		case "VIOLET":
 			builder.withFlicker().withColor(Color.PURPLE).with(FireworkEffect.Type.BALL);
-
 			break;
-		case "YELLOW": 
-
+		case "YELLOW":			
 			builder.withFlicker().withColor(Color.YELLOW).with(FireworkEffect.Type.BALL);
-
 			break;
-		default: 
-
-			builder.withFlicker().withColor(Color.RED).with(FireworkEffect.Type.BALL);	      
-
+		default:			
+			builder.withFlicker().withColor(Color.RED).with(FireworkEffect.Type.BALL);
 		}
-
+		
 		//set the firework meta based off of the color
 		meta.addEffects(new FireworkEffect[] { builder.build() });
 		meta.setPower(0);		
@@ -196,7 +128,7 @@ public class GetKitItems {
 
 		case "WOOD":
 
-			return Material.WOOD_HOE;
+			return Material.WOODEN_HOE;
 
 		case "STONE":
 
@@ -208,7 +140,7 @@ public class GetKitItems {
 
 		case "GOLD":
 
-			return Material.GOLD_HOE;
+			return Material.GOLDEN_HOE;
 
 		case "DIAMOND":
 

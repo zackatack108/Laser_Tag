@@ -24,7 +24,7 @@ public class GunType {
 		backArrow.setItemMeta(backMeta);
 
 		//create the wooden gun item for the inventory
-		ItemStack wood = new ItemStack(Material.WOOD_HOE, 1);
+		ItemStack wood = new ItemStack(Material.WOODEN_HOE, 1);
 		ItemMeta woodMeta = wood.getItemMeta();
 		woodMeta.setDisplayName(ChatColor.YELLOW + "Choose the wooden gun");
 		wood.setItemMeta(woodMeta);
@@ -42,7 +42,7 @@ public class GunType {
 		iron.setItemMeta(ironMeta);
 
 		//create the gold gun item for the inventory
-		ItemStack gold = new ItemStack(Material.GOLD_HOE, 1);
+		ItemStack gold = new ItemStack(Material.GOLDEN_HOE, 1);
 		ItemMeta goldMeta = gold.getItemMeta();
 		goldMeta.setDisplayName(ChatColor.YELLOW + "Choose the gold gun");
 		gold.setItemMeta(goldMeta);

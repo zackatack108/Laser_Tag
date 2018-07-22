@@ -23,55 +23,55 @@ public class ReloadTime {
 		backArrow.setItemMeta(backMeta);
 		
 		//create the 10 second reload time item
-		ItemStack ten = new ItemStack(Material.WATCH, 10);
+		ItemStack ten = new ItemStack(Material.CLOCK, 10);
 		ItemMeta tenMeta = ten.getItemMeta();
 		tenMeta.setDisplayName(ChatColor.YELLOW + "Choose 10 second reload time");
 		ten.setItemMeta(tenMeta);
 		
 		//create the 9 second reload time item
-		ItemStack nine = new ItemStack(Material.WATCH, 9);
+		ItemStack nine = new ItemStack(Material.CLOCK, 9);
 		ItemMeta nineMeta = nine.getItemMeta();
 		nineMeta.setDisplayName(ChatColor.YELLOW + "Choose 9 second reload time");
 		nine.setItemMeta(nineMeta);
 		
 		//create the 8 second reload time item
-		ItemStack eight = new ItemStack(Material.WATCH, 8);
+		ItemStack eight = new ItemStack(Material.CLOCK, 8);
 		ItemMeta eightMeta = eight.getItemMeta();
 		eightMeta.setDisplayName(ChatColor.YELLOW + "Choose 8 second reload time");
 		eight.setItemMeta(eightMeta);
 		
 		//create the 7 second reload time item
-		ItemStack seven = new ItemStack(Material.WATCH, 7);
+		ItemStack seven = new ItemStack(Material.CLOCK, 7);
 		ItemMeta sevenMeta = seven.getItemMeta();
 		sevenMeta.setDisplayName(ChatColor.YELLOW + "Choose 7 second reload time");
 		seven.setItemMeta(sevenMeta);
 		
 		//create the 6 second reload time item
-		ItemStack six = new ItemStack(Material.WATCH, 6);
+		ItemStack six = new ItemStack(Material.CLOCK, 6);
 		ItemMeta sixMeta = six.getItemMeta();
 		sixMeta.setDisplayName(ChatColor.YELLOW + "Choose 6 second reload time");
 		six.setItemMeta(sixMeta);
 		
 		//create the 5 second reload time item
-		ItemStack five = new ItemStack(Material.WATCH, 5);
+		ItemStack five = new ItemStack(Material.CLOCK, 5);
 		ItemMeta fiveMeta = five.getItemMeta();
 		fiveMeta.setDisplayName(ChatColor.YELLOW + "Choose 5 second reload time");
 		five.setItemMeta(fiveMeta);
 		
 		//create the 4 second reload time item
-		ItemStack four = new ItemStack(Material.WATCH, 4);
+		ItemStack four = new ItemStack(Material.CLOCK, 4);
 		ItemMeta fourMeta = four.getItemMeta();
 		fourMeta.setDisplayName(ChatColor.YELLOW + "Choose 4 second reload time");
 		four.setItemMeta(fourMeta);
 		
 		//create the 3 second reload time item
-		ItemStack three = new ItemStack(Material.WATCH, 3);
+		ItemStack three = new ItemStack(Material.CLOCK, 3);
 		ItemMeta threeMeta = three.getItemMeta();
 		threeMeta.setDisplayName(ChatColor.YELLOW + "Choose 3 second reload time");
 		three.setItemMeta(threeMeta);
 		
 		//create the 2 second reload time item
-		ItemStack two = new ItemStack(Material.WATCH, 2);
+		ItemStack two = new ItemStack(Material.CLOCK, 2);
 		ItemMeta twoMeta = two.getItemMeta();
 		twoMeta.setDisplayName(ChatColor.YELLOW + "Choose 2 second reload time");
 		two.setItemMeta(twoMeta);

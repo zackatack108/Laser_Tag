@@ -31,42 +31,42 @@ public class LaserColor {
 		backArrow.setItemMeta(backMeta);
 
 		//create the different colored items for the inventory
-		ItemStack red = new ItemStack(Material.STAINED_GLASS, 1, (byte) 14);
+		ItemStack red = new ItemStack(Material.RED_STAINED_GLASS, 1);
 		ItemMeta redMeta = red.getItemMeta();
 		redMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color red");
 		red.setItemMeta(redMeta);
 
-		ItemStack orange = new ItemStack(Material.STAINED_GLASS, 1, (byte) 1);
+		ItemStack orange = new ItemStack(Material.ORANGE_STAINED_GLASS, 1);
 		ItemMeta orangeMeta = orange.getItemMeta();
 		orangeMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color orange");
 		orange.setItemMeta(orangeMeta);
 
-		ItemStack yellow = new ItemStack(Material.STAINED_GLASS, 1, (byte) 4);
+		ItemStack yellow = new ItemStack(Material.YELLOW_STAINED_GLASS, 1);
 		ItemMeta yellowMeta = yellow.getItemMeta();
 		yellowMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color yellow");
 		yellow.setItemMeta(yellowMeta);
 
-		ItemStack green = new ItemStack(Material.STAINED_GLASS, 1, (byte) 5);
+		ItemStack green = new ItemStack(Material.LIME_STAINED_GLASS, 1);
 		ItemMeta greenMeta = green.getItemMeta();
 		greenMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color green");
 		green.setItemMeta(greenMeta);
 
-		ItemStack blue = new ItemStack(Material.STAINED_GLASS, 1, (byte) 11);
+		ItemStack blue = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS, 1);
 		ItemMeta blueMeta = blue.getItemMeta();
 		blueMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color blue");
 		blue.setItemMeta(blueMeta);
 
-		ItemStack indigo = new ItemStack(Material.STAINED_GLASS, 1, (byte) 2);
+		ItemStack indigo = new ItemStack(Material.BLUE_STAINED_GLASS, 1);
 		ItemMeta indigoMeta = indigo.getItemMeta();
 		indigoMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color indigo");
 		indigo.setItemMeta(indigoMeta);
 
-		ItemStack violet = new ItemStack(Material.STAINED_GLASS, 1, (byte) 10);
+		ItemStack violet = new ItemStack(Material.PURPLE_STAINED_GLASS, 1);
 		ItemMeta violetMeta = violet.getItemMeta();
 		violetMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color violet");
 		violet.setItemMeta(violetMeta);
 
-		ItemStack pink = new ItemStack(Material.STAINED_GLASS, 1, (byte) 6);
+		ItemStack pink = new ItemStack(Material.PINK_STAINED_GLASS, 1);
 		ItemMeta pinkMeta = pink.getItemMeta();
 		pinkMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color pink");
 		pink.setItemMeta(pinkMeta);
@@ -81,7 +81,7 @@ public class LaserColor {
 				if(count > 0) {
 					
 					//check if on black and set it back to 0
-					if(color == 15) {						
+					if(color == 6) {						
 						color = 0;
 					} else {
 						//increment color by 1
@@ -96,9 +96,36 @@ public class LaserColor {
 				
 				//decrement count by one
 				count--;
+				
+				ItemStack rainbow = new ItemStack(Material.RED_STAINED_GLASS, 1);
+
+				switch(color) {
+
+				case 0:
+					rainbow = new ItemStack(Material.RED_STAINED_GLASS, 1);
+					break;
+				case 1:
+					rainbow = new ItemStack(Material.ORANGE_STAINED_GLASS, 1);
+					break;
+				case 2:
+					rainbow = new ItemStack(Material.YELLOW_STAINED_GLASS, 1);
+					break;
+				case 3:
+					rainbow = new ItemStack(Material.LIME_STAINED_GLASS, 1);
+					break;
+				case 4:
+					rainbow = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS, 1);
+					break;
+				case 5:
+					rainbow = new ItemStack(Material.BLUE_STAINED_GLASS, 1);
+					break;
+				case 6:
+					rainbow = new ItemStack(Material.PURPLE_STAINED_GLASS, 1);
+					break;
+					
+				}
 
 				//create the rainbow item
-				ItemStack rainbow = new ItemStack(Material.STAINED_GLASS, 1, (byte) color);
 				ItemMeta rainbowMeta = rainbow.getItemMeta();
 				rainbowMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color rainbow");
 				rainbow.setItemMeta(rainbowMeta);				

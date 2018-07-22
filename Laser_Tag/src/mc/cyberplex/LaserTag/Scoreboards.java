@@ -22,6 +22,7 @@ public class Scoreboards {
 	Set<String> arenas = plugin.getConfig().getConfigurationSection("Arenas").getKeys(false);
 	Arena data = new Arena();
 
+	@SuppressWarnings("deprecation")
 	public void lobbyBoard(int arenaNum, Player player, String arenaName) {
 
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -61,6 +62,7 @@ public class Scoreboards {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	public void gameBoard(int arenaNum, Player player, String arenaName) {
 
 		ScoreboardManager manager = Bukkit.getScoreboardManager();

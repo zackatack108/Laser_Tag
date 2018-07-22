@@ -70,7 +70,7 @@ public class GunFire implements Listener{
 				gunType = new ItemStack(kit.getGunType(player, arenaNum));
 			}
 
-			if(player.getInventory().getItemInMainHand().equals(gunType) && inArena == true) {
+			if(inArena == true && player.getInventory().getItemInMainHand().equals(gunType)) {
 
 				Location start = player.getEyeLocation();
 				Vector increase = start.getDirection();
@@ -105,12 +105,12 @@ public class GunFire implements Listener{
 
 					Location point = start.add(increase);
 
-					float x = (float) point.getX();
+					/*float x = (float) point.getX();
 					float y = (float) point.getY();
-					float z = (float) point.getZ();
+					float z = (float) point.getZ();*/
 
-					kit.getLaserColor(player, x, y, z, arenaNum);
-					player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_LAUNCH, 1, 2);
+					kit.getLaserColor(player, point, arenaNum);
+					player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1, 2);
 
 					if ((otherPlayer != null) && otherPlayer.getGameMode().equals(GameMode.SURVIVAL) &&
 							(Math.round(point.getX()) == Math.round(this.otherPlayerLoc.getX())) && 

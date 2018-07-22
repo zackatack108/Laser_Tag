@@ -17,13 +17,13 @@ public class Shop {
 		Inventory ltShop = Bukkit.createInventory(null, 27, ChatColor.DARK_RED + "Laser Tag Shop");
 
 		//create the laser color item to be put in the inventory
-		ItemStack laserColor = new ItemStack(Material.STAINED_GLASS, 1, (byte) 14);
+		ItemStack laserColor = new ItemStack(Material.RED_STAINED_GLASS, 1);
 		ItemMeta laserMeta = laserColor.getItemMeta();
 		laserMeta.setDisplayName(ChatColor.YELLOW + "Choose laser color");
 		laserColor.setItemMeta(laserMeta);
 		
 		//create the firework color item to be put in the inventory
-		ItemStack fireworkColor = new ItemStack(Material.WOOL, 1, (byte) 14);
+		ItemStack fireworkColor = new ItemStack(Material.RED_WOOL, 1);
 		ItemMeta fireworkMeta = fireworkColor.getItemMeta();
 		fireworkMeta.setDisplayName(ChatColor.YELLOW + "Choose firework color");
 		fireworkColor.setItemMeta(fireworkMeta);
@@ -41,7 +41,7 @@ public class Shop {
 		range.setItemMeta(rangeMeta);
 		
 		//create the reload time item to be put in the inventory
-		ItemStack reload = new ItemStack(Material.WATCH, 1);
+		ItemStack reload = new ItemStack(Material.CLOCK, 1);
 		ItemMeta reloadMeta = reload.getItemMeta();
 		reloadMeta.setDisplayName(ChatColor.YELLOW + "Choose reload time");
 		reload.setItemMeta(reloadMeta);
