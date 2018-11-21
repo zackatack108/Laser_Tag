@@ -10,6 +10,8 @@ import mc.cyberplex.LaserTag.kits.KitListeners;
 import mc.cyberplex.LaserTag.listeners.GunFire;
 import mc.cyberplex.LaserTag.listeners.InventoryMove;
 import mc.cyberplex.LaserTag.listeners.JoinSign;
+import mc.cyberplex.LaserTag.listeners.PlayerBreakBlock;
+import mc.cyberplex.LaserTag.listeners.PlayerDamage;
 import mc.cyberplex.LaserTag.listeners.PlayerDeath;
 import mc.cyberplex.LaserTag.listeners.PlayerJoin;
 import mc.cyberplex.LaserTag.listeners.PlayerLeaveGame;
@@ -44,6 +46,8 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new InventoryMove(), this);
 		getServer().getPluginManager().registerEvents(new PlayerLeaveGame(), this);
 		getServer().getPluginManager().registerEvents(new JoinSign(), this);
+		getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
+		getServer().getPluginManager().registerEvents(new PlayerBreakBlock(), this);
 		
 	}
 	

@@ -1,6 +1,7 @@
 package mc.cyberplex.LaserTag.arena;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import mc.cyberplex.LaserTag.Main;
@@ -86,7 +87,10 @@ public class PlayerState {
 			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());		
 			player.teleport(data.getHub());
 			player.sendMessage(ChatColor.YELLOW + "Leaving laser tag arena");
-			player.sendMessage(ChatColor.YELLOW + "Sending you to the laser tag hub.");	
+			player.sendMessage(ChatColor.YELLOW + "Sending you to the laser tag hub.");
+			player.setGameMode(GameMode.SURVIVAL);
+			player.setHealth(20);
+			player.setFireTicks(0);
 		}
 		data.getArena(arenaNum).removePlayer(player);
 		joinSign.updateSign(arenaName);
@@ -97,14 +101,10 @@ public class PlayerState {
 		//--------------------------------------------------------------------------------------------------
 		if(player !=null) {
 			if(state.equalsIgnoreCase("waiting for players")){
-
 				getPlayerList.getPlayer(arenaName, Message.LOBBY);
-
 			} else if(state.equalsIgnoreCase("running")){
-
 				//Calls the getPlayerList class to load the game scoreboard
 				getPlayerList.getPlayer(arenaName, Message.GAME);
-
 			}
 		}
 		//--------------------------------------------------------------------------------------------------

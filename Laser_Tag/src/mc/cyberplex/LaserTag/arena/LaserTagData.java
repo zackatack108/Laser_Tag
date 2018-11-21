@@ -63,6 +63,41 @@ public class LaserTagData {
 	}
 
 	//---------------------------------------------------
+	//removers for class
+	//---------------------------------------------------
+	public void removeFromPlayerKits(int index) {
+		if(playerKit != null && playerKit.get(index) != null) {
+			playerKit.remove(index);			
+		}
+	}
+	
+	public void removeFromScoreboard(int index) {
+		
+		if(playerScores[index] >= 0) {
+			
+			int tempScores[] = new int[MAX];
+			int count = 0;
+			
+			for(int i = 0; i < MAX; i++) {
+				
+				if(i != index) {
+					tempScores[count] = playerScores[i];
+					count++;
+				}			
+				
+			}
+			
+			for(int i = 0; i < MAX; i++) {
+				
+				playerScores[i] = tempScores[i];
+				
+			}
+			
+		}
+		
+	}
+
+	//---------------------------------------------------
 	//getters for class
 	//---------------------------------------------------
 	public int getPlayerScore(int index){
@@ -76,13 +111,13 @@ public class LaserTagData {
 	public String getLaserColor(Player player) {		
 
 		for(int index = 0; index < playerKit.size(); index++) {
-			
+
 			if(playerKit.get(index).playerID.equals(player.getUniqueId())) {
 				return playerKit.get(index).laserColor;
 			}
 
 		}
-		
+
 		return null;
 	}
 
@@ -93,14 +128,14 @@ public class LaserTagData {
 			if(playerKit.get(index).playerID.equals(player.getUniqueId())) {
 				return playerKit.get(index).fireworkColor;
 			}
-			
+
 		}
-		
+
 		return null;
 	}
 
 	public String getGunType(Player player) {
-		
+
 		String gunType = null;
 
 		for(int index = 0; index < playerKit.size(); index++) {
@@ -110,7 +145,7 @@ public class LaserTagData {
 			}
 
 		}
-		
+
 		return gunType;
 	}
 
@@ -123,7 +158,7 @@ public class LaserTagData {
 			}
 
 		}
-		
+
 		return null;
 	}
 
@@ -136,8 +171,8 @@ public class LaserTagData {
 			}
 
 		}
-		
+
 		return null;
 	}
-	
+
 }

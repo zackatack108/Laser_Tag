@@ -105,10 +105,6 @@ public class GunFire implements Listener{
 
 					Location point = start.add(increase);
 
-					/*float x = (float) point.getX();
-					float y = (float) point.getY();
-					float z = (float) point.getZ();*/
-
 					kit.getLaserColor(player, point, arenaNum);
 					player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1, 2);
 
